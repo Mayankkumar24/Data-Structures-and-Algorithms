@@ -1,0 +1,39 @@
+class Solution {
+    typedef pair<int,int>p;
+public:
+    
+    int secondMinimum(int n, vector<vector<int>>& edges, int time, int change) {
+        unordered_map<int,vector<int>>graph;
+        for (auto &x : edges){
+            graph[x[0]].push_back(x[1]);
+            graph[x[1]].push_back(x[0]);
+        }
+        vector<int>d1(n+1,INT_MAX),d2(n+1,INT_MAX);
+        d1[1] =0;
+        priority_queue<p,vector<p>,greater<p>>pq;
+        pq.push({0,1});
+        while(!pq.empty()){
+            int timepassed = pq.top().first;
+            int node  = pq.top().second;
+            pq.pop();
+            if (node == n && d2[n] != INT_MAX){
+                return d2[n];
+            }
+            int div = timepassed/change;
+            if (div%2==1){
+                timepassed = (change*(div+1));
+            }
+            for (auto &nbr : graph[node]){
+                if (d1[nbr] > timepassed+time){
+                    d2[nbr] = d1[nbr];
+                    d1[nbr] = timepassed+time;
+                    pq.push({timepassed+time,nbr});
+                }else if (d2[nbr] > timepassed+time && d1[nbr] != timepassed+time){
+                    d2[nbr] = timepassed+time;
+                    pq.push({timepassed+time,nbr});
+                }
+            }
+        }
+        return -1;
+    }
+};
