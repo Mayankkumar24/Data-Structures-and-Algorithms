@@ -1,0 +1,35 @@
+int quickestWayUp(vector<vector<int>> ladders, vector<vector<int>> snakes) {
+    
+    unordered_map<int,int>graph1,graph2;
+    for (auto &x : ladders){
+        graph1[x[0]] = x[1];
+    }
+    for (auto &x : snakes){
+        graph2[x[0]] = x[1];
+    }
+    vector<int>vis(101,0); vis[1] = 1;
+    queue<pair<int,int>>q; q.push({1,0});
+    while(!q.empty()){
+        int node = q.front().first;
+        int move = q.front().second; q.pop();
+        if (node == 100){
+            return move;
+        }
+        for (int i=1; i<=6; i++){
+            int next_node = node+i;
+            if (!vis[next_node] && next_node <= 100){
+                if (graph1.count(next_node)>0){
+                    vis[next_node] = 1; q.push({graph1[next_node],move+1});
+                }
+                else if (graph2.count(next_node)>0){
+                    vis[next_node] = 1; q.push({graph2[next_node],move+1});
+                }else{
+                    vis[next_node] = 1; q.push({next_node,move+1});
+                }
+            }
+        }
+    }
+    return -1;
+    
+
+}
