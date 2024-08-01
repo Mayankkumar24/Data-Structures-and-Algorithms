@@ -1,0 +1,29 @@
+int top_row = 0;
+        int right_col = m-1, left_col = 0;
+        int bottom_row = n-1;
+        int j = top_row;
+        while(true){
+            while(j<=right_col){
+                ans.push_back(matrix[top_row][j]);
+                j++;
+            }
+            top_row++; j = top_row;
+            while(j<=bottom_row){
+                ans.push_back(matrix[j][right_col]);
+                j++;
+            }
+            right_col--; j = right_col;
+            while(j>=left_col){
+                ans.push_back(matrix[bottom_row][j]);
+                j--;
+            }
+            bottom_row--; j = bottom_row;
+            while(j>=top_row){
+                ans.push_back(matrix[j][left_col]);
+                j--;
+            }
+            left_col++; j = top_row;
+            if (ans.size() == n*m){
+                return ans;
+            }
+        }
