@@ -1,0 +1,57 @@
+//{ Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+
+// } Driver Code Ends
+class Solution {
+  public:
+    int dp[105][105];
+    int solve(int i, int j,string s1,string s2,int n1,int n2){
+        if (i>=n1 && j <n2){
+            return n2-j;
+        }
+        if (i < n1 && j >= n2){
+            return n1-i;
+        }
+        if (i >= n1 || j >= n2) return 0;
+        if (dp[i][j] != -1){
+            return dp[i][j];
+        }
+        int res = INT_MAX;
+        if (s1[i] == s2[j]){
+            res = min(res,solve(i+1,j+1,s1,s2,n1,n2));
+        }
+        else{
+            int op1 = 1 + solve(i,j+1,s1,s2,n1,n2);
+            int op2 = 1 + solve(i+1,j,s1,s2,n1,n2);
+            int op3 = 1 + solve(i+1,j+1,s1,s2,n1,n2);
+            res = min({res,op1,op2,op3});
+        }
+        return dp[i][j] = res;
+    }
+    int editDistance(string str1, string str2) {
+        // Code here
+        memset(dp,-1,sizeof(dp));
+        int n1 = str1.size(), n2 = str2.size();
+        return solve(0,0,str1,str2,n1,n2);
+        
+        
+    }
+};
+
+//{ Driver Code Starts.
+int main() {
+    int T;
+    cin >> T;
+    while (T--) {
+        string s, t;
+        cin >> s >> t;
+        Solution ob;
+        int ans = ob.editDistance(s, t);
+        cout << ans << "\n";
+    }
+    return 0;
+}
+
+// } Driver Code Ends
