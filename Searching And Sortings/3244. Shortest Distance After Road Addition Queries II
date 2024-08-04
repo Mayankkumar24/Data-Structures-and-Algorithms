@@ -1,0 +1,19 @@
+class Solution {
+public:
+    void erasemiddlenode(set<int>&s,int x,int y){
+        auto lower = s.lower_bound(x);
+        auto upper = s.upper_bound(y);
+        s.erase(lower,upper);
+    }
+    vector<int> shortestDistanceAfterQueries(int n, vector<vector<int>>& queries) {
+        set<int>s;
+        for (int i=0; i<n; i++) s.insert(i);
+        vector<int>ans;
+        for (auto &x : queries){
+            int u = x[0], v = x[1];
+            erasemiddlenode(s,u+1,v-1);
+            ans.push_back(s.size()-1);
+        }
+        return ans;
+    }
+};
