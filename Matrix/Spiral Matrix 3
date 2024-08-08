@@ -1,0 +1,25 @@
+class Solution {
+public:
+    vector<vector<int>> spiralMatrixIII(int rows, int cols, int rs, int cs) {
+        vector<vector<int>>res;
+        res.push_back({rs,cs});
+        int step = 0;
+        // East -> 0, south -> 1, west -> 2, North -> 3;
+        // East and West jane pr steps++; hote h;
+        vector<vector<int>>directions = {{0,1},{1,0},{0,-1},{-1,0}};
+        int dir = 0;
+        while(res.size() != rows*cols){
+            if (dir == 0 || dir == 2) step++;
+
+            for (int cnt = 0; cnt < step; cnt++){
+                rs += directions[dir][0];
+                cs += directions[dir][1];
+                if (rs < rows && rs >= 0 && cs < cols && cs >=0){
+                    res.push_back({rs,cs});
+                }
+            }
+            dir = (dir+1)%4;
+        }
+        return res;
+    }
+};
