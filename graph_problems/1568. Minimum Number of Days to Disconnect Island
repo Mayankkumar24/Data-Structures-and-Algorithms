@@ -1,0 +1,59 @@
+class Solution {
+public:
+    void dfs(int i, int j, vector<vector<int>>& grid) {
+        grid[i][j] = 0;  // Mark the current cell as visited (0 = water)
+        int x[4] = {0, -1, 0, 1};
+        int y[4] = {-1, 0, 1, 0};
+        for (int k = 0; k < 4; k++) {
+            int nr = i + x[k];
+            int nc = j + y[k];
+            if (nr >= 0 && nc >= 0 && nr < grid.size() && nc < grid[0].size() && grid[nr][nc] == 1) {
+                dfs(nr, nc, grid);
+            }
+        }
+    }
+
+    int countIslands(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+        int count = 0;
+        vector<vector<int>> gridCopy = grid;
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (gridCopy[i][j] == 1) {
+                    count++;
+                    dfs(i, j, gridCopy);
+                }
+            }
+        }
+
+        return count;
+    }
+
+    int minDays(vector<vector<int>>& grid) {
+        int initialIslands = countIslands(grid);
+
+        if (initialIslands > 1 || initialIslands == 0) {
+            return 0;
+        }
+
+        // Check if removing one land cell creates multiple islands
+        for (int i = 0; i < grid.size(); i++) {
+            for (int j = 0; j < grid[0].size(); j++) {
+                if (grid[i][j] == 1) {
+                    grid[i][j] = 0;  // Remove the land cell
+                    int newIslands = countIslands(grid);
+                    grid[i][j] = 1;  // Restore the land cell
+
+                    if (newIslands > 1 || newIslands==0) {
+                        return 1;  // We can create more than one island by removing this cell
+                    }
+                }
+            }
+        }
+
+        // If removing one land cell doesn't create multiple islands, return 2
+        return 2;
+    }
+};
