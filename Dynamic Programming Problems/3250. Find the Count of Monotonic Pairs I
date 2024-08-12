@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int n;
+    int dp[2005][55][55];
+    const int mod = 1e9 + 7;
+    int solve(int i,int p1,int p2,vector<int>&nums){
+        if (i == n) return 1;
+        if (dp[i][p1][p2] != -1) return dp[i][p1][p2];
+        int ans = 0;
+        for (int i1=p1; i1<=nums[i]; i1++){
+            int i2 = nums[i] - i1;
+            if (i2 <= p2){
+                ans += solve(i+1,i1,i2,nums);
+                ans %= mod;
+            }
+        }
+        return dp[i][p1][p2] = ans;
+    }
+    int countOfPairs(vector<int>& nums) {
+        n = nums.size();
+        memset(dp,-1,sizeof(dp));
+        return solve(0,0,54,nums);
+    }
+};
