@@ -1,0 +1,48 @@
+//{ Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+
+// } Driver Code Ends
+class Solution {
+  public:
+    int ans = 0;
+    int dp[1005][1005];
+    int n1,n2;
+    int solve(int i,int j,string &s1,string &s2){
+        n1 = s1.size(); n2 = s2.size();
+        if (i >= n1 || j >= n2) return 0;
+        if (dp[i][j] != -1) return dp[i][j];
+        int ex1 = solve(i+1,j,s1,s2);
+        int ex2 = solve(i,j+1,s1,s2);
+        int take  = 0;
+        if (s1[i] == s2[j]){
+            take = 1 + solve(i+1,j+1,s1,s2);
+            ans = max(ans,take);
+        }
+        return dp[i][j] = take;
+    }
+    int longestCommonSubstr(string str1, string str2) {
+        // your code here
+        memset(dp,-1,sizeof(dp));
+        solve(0,0,str1,str2);
+        return ans;
+        
+        
+    }
+};
+
+//{ Driver Code Starts.
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        string s1, s2;
+        cin >> s1 >> s2;
+        Solution ob;
+
+        cout << ob.longestCommonSubstr(s1, s2) << endl;
+    }
+}
+// } Driver Code Ends
