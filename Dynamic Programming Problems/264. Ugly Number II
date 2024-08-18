@@ -1,0 +1,21 @@
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        vector<int>t(n+1);
+
+        t[1] = 1;
+        int i2 = 1, i3 = 1, i5 = 1;
+
+        for (int i=2; i<=n; i++){
+            int i2_ugly_no = t[i2]*2;
+            int i3_ugly_no = t[i3]*3;
+            int i5_ugly_no = t[i5]*5;
+            int ith_ugly_no = min({i2_ugly_no,i3_ugly_no,i5_ugly_no});
+            t[i] = ith_ugly_no;
+            if (ith_ugly_no == i2_ugly_no) i2++;
+            if (ith_ugly_no == i3_ugly_no) i3++;
+            if (ith_ugly_no == i5_ugly_no) i5++;
+        }
+        return t[n];
+    }
+};
