@@ -1,0 +1,46 @@
+class Solution {
+public:
+    long func(long FirstHalf,bool isEven){
+        long res_num = FirstHalf;
+        if (!isEven){
+            FirstHalf /= 10;
+        }
+        while(FirstHalf > 0){
+            int digit = FirstHalf % 10;
+            res_num = (res_num * 10) + digit;
+            FirstHalf /= 10;
+        }
+        return res_num;
+    }
+    string nearestPalindromic(string n) {
+        int L = n.size();
+        int mid = L/2;
+        int first_half_length = (L%2 == 0 ? mid : mid+1);
+        long FirstHalf = stol(n.substr(0,first_half_length));
+
+        vector<long>results;
+
+        results.push_back(func(FirstHalf,L%2==0));
+        results.push_back(func(FirstHalf+1,L%2==0));
+        results.push_back(func(FirstHalf-1,L%2==0));
+        results.push_back((long) pow(10,L-1)-1);
+        results.push_back((long) pow(10,L)+1);
+
+        long diff = LONG_MAX;
+        long res = INT_MAX;
+        long original_num = stol(n);
+
+        for (auto &x : results){
+            if (x == original_num) continue;
+
+            else if (abs(x - original_num) < diff){
+                diff = abs(x-original_num);
+                res = x;
+            }
+            else if (abs(x - original_num) == diff){
+                res = min(res,x);
+            }
+        }
+        return to_string(res);
+    }
+};
