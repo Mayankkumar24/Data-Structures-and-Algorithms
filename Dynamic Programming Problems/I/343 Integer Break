@@ -1,0 +1,23 @@
+class Solution {
+public:
+    int dp[60];
+    int solve(int n){
+        if (n < 0) return -1;
+        if (n ==0) return 1;
+        if (dp[n] != -1) return dp[n];
+
+        int ans = INT_MIN;
+        for (int j=1; j<=n-1; j++){
+            int prod = j * max(n-j,solve(n-j));
+            ans =max(ans,prod);
+        }
+        return dp[n] = ans;
+    }
+    int integerBreak(int n) {
+        memset(dp,-1,sizeof(dp));
+        if (n == 2) return 1;
+        // res = 1 * (n-1);
+        return solve(n);
+
+    }
+};
