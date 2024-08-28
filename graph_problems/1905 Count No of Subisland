@@ -1,0 +1,43 @@
+class Solution {
+public:
+    int n,m;
+    bool BFS(int i, int j,vector<vector<int>>& grid1,vector<vector<int>>& grid2,vector<vector<int>>&vis){
+        vector<int>row = {0,0,1,-1}; vector<int>col = {-1,1,0,0};
+        queue<pair<int,int>>q; q.push({i,j});
+        vis[i][j] = 1;
+        int key = 1;
+        while(!q.empty()){
+            int x =  q.front().first;
+            int y = q.front().second; q.pop();
+            for (int r=0; r<4; r++){
+                int nx = row[r]+x;
+                int ny = col[r]+y;
+                if(nx<n && nx>=0 && ny<m && ny>=0){
+                    if (grid2[nx][ny] == 1 && !vis[nx][ny]){
+                        if (grid1[nx][ny] == 0){
+                            key = 0;
+                        }
+                        q.push({nx,ny});
+                        vis[nx][ny] = 1;
+                    }
+                }
+            }
+        }
+        if (key) return 1;
+        else return 0;
+    }
+    int countSubIslands(vector<vector<int>>& grid1, vector<vector<int>>& grid2) {
+        n = grid1.size(); m = grid1[0].size();
+        vector<vector<int>>vis(n,vector<int>(m,0));
+        int is_land = 0;
+        for (int i=0; i<n; i++){
+            for (int j=0; j<m; j++){
+                if (!vis[i][j] && grid1[i][j] ==1 && grid2[i][j]==1){
+                    //is_land++;
+                    if (BFS(i,j,grid1,grid2,vis)) is_land++;
+                }
+            }
+        }
+        return is_land;
+    }
+};
