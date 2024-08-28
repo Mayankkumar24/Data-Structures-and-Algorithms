@@ -1,0 +1,30 @@
+class Solution {
+public:
+    //int dp[21][5000];
+    int solve(int i,int res, int target,vector<int>&nums,vector<vector<int>>&dp){
+        int n = nums.size();
+        //if (sum > target) return 0;
+        //if (target == sum) return 1;
+        if (i >= n){
+            if (res == 0) return 1;
+            else return 0;
+        }
+        if (dp[i][res] != -1) return dp[i][res];
+        int not_take = solve(i+1,res,target,nums,dp);
+        int take = 0;
+        if (nums[i] <= res){
+            take = solve(i+1,res-nums[i],target,nums,dp);
+        }
+        return dp[i][res] = (take + not_take);
+
+    }
+    int findTargetSumWays(vector<int>& nums, int target) {
+        int n = nums.size();
+        int curr = accumulate(nums.begin(),nums.end(),0);
+        int res = (curr - target);
+        if (res%2 != 0 || res < 0) return 0;
+        res /= 2;
+        vector<vector<int>>dp(n+1,vector<int>(res+1,-1));
+        return solve(0,res,target,nums,dp);
+    }
+};
