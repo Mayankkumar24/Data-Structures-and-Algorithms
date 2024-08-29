@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int n,m;
+    int dp[305][305];
+    int solve(int i, int j,vector<vector<int>>&matrix){
+        if (i == n || j == m || matrix[i][j] == 0){
+            return 0;
+        }
+        if (dp[i][j] != -1) return dp[i][j];
+        int move_right = solve(i,j+1,matrix);
+        int move_down = solve(i+1,j,matrix);
+        int move_digonal = solve(i+1,j+1,matrix);
+
+        return dp[i][j] =  1 + min({move_right,move_down,move_digonal});
+    }
+    int countSquares(vector<vector<int>>& matrix) {
+        n = matrix.size(); m = matrix[0].size();
+        int cnt = 0;
+        memset(dp,-1,sizeof(dp));
+        for (int i=0; i<n; i++){
+            for (int j=0; j<m; j++){
+                if (matrix[i][j] == 1){
+                    cnt += solve(i,j,matrix);
+                }
+            }
+        }
+        return cnt;
+    }
+};
