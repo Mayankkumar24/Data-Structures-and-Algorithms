@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int n;
+    void dfs(int ind, vector<vector<int>>& st,vector<int>&vis){
+        vis[ind] = 1;
+        for (int i=0; i<n; i++){
+            if (!vis[i]){
+                if (st[i][0] == st[ind][0] || st[i][1] == st[ind][1]){
+                    dfs(i,st,vis);
+                }
+            }
+        }
+    }
+    int removeStones(vector<vector<int>>& stones) {
+        n = stones.size();
+
+        vector<int>vis(n+1,0);
+
+        int cnt = 0;
+
+        for (int i=0; i<n; i++){
+            if (!vis[i]){
+                dfs(i,stones,vis);
+                cnt++;
+            }
+        }
+        return n - cnt;
+    }
+};
