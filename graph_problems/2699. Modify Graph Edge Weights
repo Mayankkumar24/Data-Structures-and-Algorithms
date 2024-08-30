@@ -1,0 +1,62 @@
+class Solution {
+public:
+    typedef long long ll;
+    const int Large_val = 2e9;
+    typedef pair<ll,ll>p;
+    ll find_sp(vector<vector<int>>& edges,int n, int &src, int &dest){
+        unordered_map<ll,vector<pair<ll,ll>>>graph;
+        for (auto &x : edges){
+            if (x[2] != -1){
+                graph[x[0]].push_back({x[1],x[2]});
+                graph[x[1]].push_back({x[0],x[2]});
+            }
+        }
+        priority_queue<p,vector<p>,greater<p>>pq;
+        pq.push({0,src});
+        vector<ll>res(n,INT_MAX); res[src] = 0;
+        vector<bool>vis(n,false);
+        while(!pq.empty()){
+            ll curr_dist = pq.top().first;
+            ll curr_node = pq.top().second; pq.pop();
+
+            if (vis[curr_node]==true) continue;
+            vis[curr_node] = true;
+            
+            for (auto &[ngbr,dist] : graph[curr_node]){
+                if (res[ngbr] > curr_dist+dist){
+                    res[ngbr] = curr_dist+dist;
+                    pq.push({res[ngbr],ngbr});
+                }
+            }
+        }
+        return res[dest];
+
+    }
+    vector<vector<int>> modifiedGraphEdges(int n, vector<vector<int>>& edges, int source, int destination, int target) {
+        ll curr_sp = find_sp(edges,n,source,destination);
+        if (curr_sp < target) return {};
+        bool match = (curr_sp == target);
+        if (match){
+            for (auto &x : edges){
+                if (x[2] == -1){
+                    x[2] = Large_val;
+                }
+            }
+            return edges;
+        }
+        for (auto &x : edges){
+            if (x[2] == -1){
+                x[2] = (match == true) ? Large_val : 1;
+                if (!match){
+                    ll new_sh_d = find_sp(edges,n,source,destination);
+                    if (new_sh_d <= target){
+                        match = true;
+                        x[2] += (target - new_sh_d);
+                    }
+                }
+            }
+        }
+        if (!match) return {};
+        return edges;
+    }
+};
