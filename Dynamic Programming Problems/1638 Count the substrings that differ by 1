@@ -1,0 +1,32 @@
+class Solution {
+public:
+    int n1,n2;
+    int dp[105][105][2];
+    int solve(string &s, string &t, int i, int j, bool diff){
+        if (i >= n1 || j >= n2) return 0;
+        if (dp[i][j][diff] != -1) return dp[i][j][diff];
+        if (diff){
+            if (s[i] != t[j]){
+                return dp[i][j][diff] = 0;
+            } 
+            return dp[i][j][diff] = 1 + solve(s,t,i+1,j+1,diff);
+        }
+
+        if (s[i] != t[j]){
+            return dp[i][j][diff] =  1 + solve(s,t,i+1,j+1,true);
+        }
+        return dp[i][j][diff] = solve(s,t,i+1,j+1,diff);
+
+    }
+    int countSubstrings(string s, string t) {
+        n1 = s.size(); n2 = t.size();
+        memset(dp,-1,sizeof(dp));
+        int ans = 0;
+        for (int i=0; i<s.size(); i++){
+            for (int j=0; j<t.size(); j++){
+                ans += solve(s,t,i,j,false);
+            }
+        }
+        return ans;
+    }
+};
