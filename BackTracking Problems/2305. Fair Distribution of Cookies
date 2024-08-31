@@ -1,0 +1,26 @@
+class Solution {
+public:
+    int n,K;
+    int unfairness = INT_MAX;
+    void solve(int ind, vector<int>&cookies,vector<int>&d){
+        if (ind >= n){
+            int curr_unfair = *max_element(d.begin(),d.end());
+            unfairness = min(unfairness,curr_unfair);
+            return;
+        }
+        int c = cookies[ind];
+        for (int i=0; i<K; i++){
+            d[i] += c;
+            solve(ind+1,cookies,d);
+            d[i] -= c;
+        }
+    }
+    int distributeCookies(vector<int>& cookies, int k) {
+        n = cookies.size();
+        K = k;
+        vector<int>d(k,0);
+        solve(0,cookies,d);
+        return unfairness;
+    
+    }
+};
