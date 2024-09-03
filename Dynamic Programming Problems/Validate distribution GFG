@@ -1,0 +1,80 @@
+//{ Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+class Array {
+  public:
+    template <class T>
+    static void input(vector<T> &A, int n) {
+        for (int i = 0; i < n; i++) {
+            scanf("%d ", &A[i]);
+        }
+    }
+
+    template <class T>
+    static void print(vector<T> &A) {
+        for (int i = 0; i < A.size(); i++) {
+            cout << A[i] << " ";
+        }
+        cout << endl;
+    }
+};
+
+
+// } Driver Code Ends
+
+class Solution {
+  public:
+    int N;
+    bool solve(int i, int curr,int &target, vector<int>&nums,vector<vector<int>>&dp){
+        if (i >= N){
+            if (curr == target) return true;
+            else return false;
+        }
+        if (curr == target) return true;
+        
+        if (curr > target) return false;
+        
+        if (dp[i][curr] != -1) return dp[i][curr];
+        
+        int take = solve(i+1,curr+nums[i],target,nums,dp);
+        int skip = solve(i+1,curr,target,nums,dp);
+        
+        return dp[i][curr] =  take || skip;
+    }
+    int isValid(int n, vector<int> &sweetness) {
+        // code here
+        int sum = accumulate(sweetness.begin(),sweetness.end(),0);
+        
+        int target = 0;
+        if (sum%3 != 0) return 0;
+        target = sum/3;
+        N  = n;
+        vector<vector<int>>dp(n+1,vector<int>(target+1,-1));
+        
+        return solve(0,0,target,sweetness,dp);
+    }
+};
+
+
+//{ Driver Code Starts.
+
+int main() {
+    int t;
+    scanf("%d ", &t);
+    while (t--) {
+
+        int n;
+        scanf("%d", &n);
+
+        vector<int> sweetness(n);
+        Array::input(sweetness, n);
+
+        Solution obj;
+        int res = obj.isValid(n, sweetness);
+
+        cout << res << endl;
+    }
+}
+
+// } Driver Code Ends
