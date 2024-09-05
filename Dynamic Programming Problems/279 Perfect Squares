@@ -1,0 +1,22 @@
+class Solution {
+public:
+    int N;
+    int dp[10001];
+    int solve(int i, int curr,int &target,vector<int>&nums){
+        if (curr == target) return 0;
+        if (i >= N || curr > target) return 1e9;
+        if (dp[curr] != -1) return dp[curr];
+        int take = 1 + solve(i,curr+nums[i],target,nums);
+        int not_take = solve(i+1,curr,target,nums);
+        return dp[curr] =  min(take,not_take);
+    }
+    int numSquares(int n) {
+        vector<int>p;
+        for (int i=1; i*i <= n; i++){
+            p.push_back(i*i);
+        }
+        N = p.size();
+        memset(dp,-1,sizeof(dp));
+        return solve(0,0,n,p);
+    }
+};
