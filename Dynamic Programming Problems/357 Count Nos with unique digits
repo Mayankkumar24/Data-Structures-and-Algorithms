@@ -1,0 +1,22 @@
+class Solution {
+public:
+    int countNumbersWithUniqueDigits(int n) {
+        
+        if (n == 0) return 1;
+
+        vector<int>dp(n+1,0);
+        dp[0] = 0;
+        dp[1] = 10;
+
+        for (int i=2; i<=n; i++){
+            int ava_digit = 9;
+            int uni_digit = 9;
+            for (int j=2; j<=i; j++){
+                uni_digit *= ava_digit;
+                ava_digit--;
+            }
+            dp[i] = dp[i-1] + uni_digit;
+        }
+        return dp[n];
+    }
+};
