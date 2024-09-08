@@ -1,0 +1,37 @@
+class Solution {
+public:
+    typedef long long ll;
+    int n;
+    bool check(vector<int>&start,int d, ll &mid){
+        ll pre = start[0];
+        for (int i=1; i<n; i++){
+            ll curr = pre + mid;
+            if (curr < start[i]){
+                pre = start[i];
+            }else{
+                if (curr >= start[i] && curr <= start[i]+d){
+                    pre = curr;
+                }else{
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    int maxPossibleScore(vector<int>& start, int d) {
+        n = start.size();
+        sort(start.begin(),start.end());
+        ll l = 0, r = 1e15;
+        int ans = -1;
+        while(l <= r){
+            ll mid = (l+r)/2;
+            if(check(start,d,mid)){
+                ans = mid;
+                l = mid+1;
+            }else{
+                r = mid-1;
+            }
+        }
+        return ans;
+    }
+};
