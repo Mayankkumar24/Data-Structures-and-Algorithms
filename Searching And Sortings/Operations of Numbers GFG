@@ -1,0 +1,66 @@
+//{ Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+
+// } Driver Code Ends
+
+class Solution {
+  public:
+    typedef long long ll;
+    long long minOps(long long a, long long b) {
+        // code here
+        
+        if (b < a) return -1;
+        ll op = 0;
+        
+        while(b > a){
+            ll low = 1, high = 1e9;
+            ll ans = 1000000001;
+            while(low <= high){
+                ll mid = (low + high)/2;
+                if (mid * mid <= b){
+                    ans = mid; low = mid+1;
+                }else{
+                    high = mid-1;
+                }
+            }
+            if (a > ans){
+                op += (b-a);
+                b = a;
+            }else{
+                if (ans * ans == b){
+                    b = ans; op++;
+                }else{
+                    op += (b-ans*ans);
+                    b = ans*ans;
+                }
+            }
+        }
+        return op;
+        
+    }
+};
+
+
+//{ Driver Code Starts.
+
+int main() {
+    int t;
+    scanf("%d ", &t);
+    while (t--) {
+
+        long long a;
+        scanf("%lld", &a);
+
+        long long b;
+        scanf("%lld", &b);
+
+        Solution obj;
+        long long res = obj.minOps(a, b);
+
+        cout << res << endl;
+    }
+}
+
+// } Driver Code Ends
