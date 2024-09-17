@@ -1,0 +1,66 @@
+//{ Driver Code Starts
+#include<bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+
+class Solution 
+{
+    public:
+    //Function to find a Mother Vertex in the Graph.
+    void is_mother(int &src,int &V, vector<int>adj[],vector<int>&vis){
+        int cnt = 1;  vis[src] = 1;
+        queue<int>q; q.push(src);
+        while(!q.empty()){
+            int edge = q.front(); q.pop();
+            for (auto next_edge : adj[edge]){
+                if (!vis[next_edge]){
+                    vis[next_edge] = 1;
+                    q.push(next_edge);
+                }
+            }
+        }
+    }
+	int findMotherVertex(int V, vector<int>adj[])
+	{
+	    // Code here
+	    vector<int>vis(V,0);
+	    int mother = -1;
+	    for (int i=0; i<V; i++){
+	        if (!vis[i]){
+	            is_mother(i,V,adj,vis);
+	            mother = i;
+	        }
+	    }
+	    for (int i=0; i<V;i++){
+	        vis[i] = 0;
+	    }
+	    is_mother(mother,V,adj,vis);
+	    for (auto &x : vis){
+	        if (x == 0) return -1;
+	    }
+	    return mother;
+	}
+
+};
+
+//{ Driver Code Starts.
+int main(){
+	int tc;
+	cin >> tc;
+	while(tc--){
+		int V, E;
+		cin >> V >> E;
+		vector<int>adj[V];
+		for(int i = 0; i < E; i++){
+			int u, v;
+			cin >> u >> v;
+			adj[u].push_back(v);
+		}
+		Solution obj;
+		int ans = obj.findMotherVertex(V, adj);
+		cout << ans <<"\n";
+	}
+	return 0;
+}
+// } Driver Code Ends
