@@ -1,0 +1,34 @@
+class Solution {
+public:
+    int dp[50];
+    int solve(int idx, string &s,unordered_map<string,int>&mp){
+        int n = s.size();
+        if (idx >= n) return 0;
+        if (dp[idx] != -1) return dp[idx];
+        int res = INT_MAX;
+        for(int j=idx; j<n; j++){
+            string t = "";
+            for (int i=idx; i<=j; i++){
+                t += s[i];
+            }
+            if (mp.count(t) > 0){
+                res = min(res,solve(j+1,s,mp));
+            }else{
+                int tt = t.size();
+                res = min(res,tt+solve(j+1,s,mp));
+            }
+        }
+        return dp[idx] = res;
+        
+    }
+    int minExtraChar(string s, vector<string>& dictionary) {
+
+        memset(dp,-1,sizeof(dp));
+        
+        unordered_map<string,int>mp;
+        for (auto &x : dictionary){
+            mp[x]++;
+        }
+        return solve(0,s,mp);
+    }
+};
