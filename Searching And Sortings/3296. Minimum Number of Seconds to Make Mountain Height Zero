@@ -1,0 +1,41 @@
+class Solution {
+public:
+    typedef long long ll;
+    ll find(int mH,int worker,ll mid){
+        ll l = 0, h = (ll) mH, ans = 0;
+        while(l <= h){
+            ll dfs = (l+h)/2;
+            ll time = dfs*(dfs+1)/2;
+            ll val  = 1LL * worker * time;
+            if (val <= mid){
+                ans = dfs;
+                l = dfs+1;
+            }else{
+                h = dfs-1;
+            }
+        }
+        return ans;
+    }
+    bool check(int &mH,ll mid, vector<int>&wT){
+        ll maxi = 0;
+        for (auto &x : wT){
+            maxi += find(mH,x,mid);
+        }
+        return maxi >= mH;
+    }
+    long long minNumberOfSeconds(int mH, vector<int>& wT) {
+        
+        int n = wT.size();
+        ll l = 0, h = 1e18, ans = 0;
+        while(l<= h){
+            ll mid = (l+h)/2;
+            if (check(mH,mid,wT)){
+                ans = mid; h = mid-1;
+            }else{
+                l = mid+1;
+            }
+        }
+        return ans;
+
+    }
+};
