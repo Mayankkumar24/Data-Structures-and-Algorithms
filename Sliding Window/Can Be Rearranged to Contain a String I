@@ -1,0 +1,37 @@
+class Solution {
+public:
+    long long validSubstringCount(string word1, string word2) {
+        vector<int>f1(26,0);
+        vector<int>f2(26,0);
+        int l = 0;
+        long long ans = 0;
+
+        for (auto &x : word2){
+            f2[x-'a']++;
+        }
+        int r = 0;
+
+        while(l <= r && l < word1.size() && r<word1.size()){
+            f1[word1[r]-'a']++;
+            bool f = true;
+            for (int i=0; i<26; i++){
+                if (f1[i] < f2[i]){
+                    f = false; break;
+                }
+            }
+            if (f){
+                while(l <= r){
+                    f1[word1[l]-'a']--;
+                    if(f1[word1[l]-'a'] < f2[word1[l]-'a']){
+                        f1[word1[l]-'a']++;
+                        break;
+                    }
+                    l++;
+                }
+                ans += (long long) (l+1);
+            }
+            r++;
+        }
+        return ans;
+    }
+};
