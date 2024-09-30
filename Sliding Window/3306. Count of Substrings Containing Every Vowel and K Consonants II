@@ -1,0 +1,33 @@
+class Solution {
+public:
+    typedef long long ll;
+    ll solve(string &s, int k){
+        int n = s.size(); ll cnt = 0;
+        unordered_set<char>st = {'a','e','i','o','u'};
+        unordered_map<char,int>mp; int j = 0; int conso = 0;
+        
+        for (int i=0; i<n; i++){
+            if (st.count(s[i]) > 0){
+                mp[s[i]]++;
+            }else{
+                conso++;
+            }
+            while(mp.size()==5 && conso > k){
+                if (st.count(s[j]) > 0){
+                    mp[s[j]]--;
+                    if (mp[s[j]] == 0){
+                        mp.erase(s[j]);
+                    }
+                }else{
+                    conso--;
+                }
+                j++;
+            }
+            cnt += (ll) (i-j+1);
+        }
+        return cnt;
+    }
+    long long countOfSubstrings(string word, int k) {
+        return solve(word,k) - solve(word,k-1);
+    }
+};
