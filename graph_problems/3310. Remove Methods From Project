@@ -1,0 +1,35 @@
+class Solution {
+public:
+    void DFS(int &node,vector<int>&suspicious,unordered_map<int,vector<int>>&graph){
+        suspicious[node] = 1;
+        for (auto &next_node : graph[node]){
+            if (suspicious[next_node] == 0){
+                DFS(next_node,suspicious,graph);
+            }
+        }
+    }
+    vector<int> remainingMethods(int n, int k, vector<vector<int>>& invocations) {
+        unordered_map<int,vector<int>>graph;
+        for (auto &x : invocations){
+            graph[x[0]].push_back(x[1]);
+        }
+        vector<int>suspicious(n,0);
+        DFS(k,suspicious,graph);
+        vector<int>ans;
+
+        for (auto &x : invocations){
+            int From = x[0];
+            int To   = x[1];
+            if (suspicious[From] == 0 && suspicious[To] == 1){
+                for (int j=0; j<n; j++){
+                    ans.push_back(j);
+                }
+                return ans;
+            }
+        }
+        for (int i=0; i<n; i++){
+            if (suspicious[i] == 0) ans.push_back(i);
+        }
+        return ans;
+    }
+};
