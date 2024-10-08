@@ -1,0 +1,21 @@
+class Solution {
+public:
+    int minSwaps(string s) {
+        
+        int n = s.size();
+        int swap = 0;
+
+        int open = 0;
+
+        for (auto &c : s){
+            if (c=='[') open++;
+            else{
+                if (open > 0){
+                    open--;
+                }
+            }
+        }
+        return (open+1)/2;
+
+    }
+};
