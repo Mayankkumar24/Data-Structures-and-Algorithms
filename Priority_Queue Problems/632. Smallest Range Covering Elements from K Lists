@@ -1,0 +1,39 @@
+class Solution {
+public:
+    typedef pair<int,pair<int,int>>p;
+    vector<int> smallestRange(vector<vector<int>>& nums) {
+
+        int k = nums.size();
+        vector<int>ans = {-1000000,1000000};
+
+        int maxi = INT_MIN;
+
+        priority_queue<p,vector<p>,greater<p>>pq;
+
+        for (int i=0; i<k; i++){
+            pq.push({nums[i][0],{i,0}});
+            maxi = max(maxi,nums[i][0]);
+        }
+        
+        while(!pq.empty()){
+
+            int curr_mini = pq.top().first;
+            int lst_idx   = pq.top().second.first;
+            int idx       = pq.top().second.second;
+            pq.pop();
+
+            if (maxi-curr_mini < ans[1]-ans[0]){
+                ans[0] = curr_mini; ans[1] = maxi;
+            }
+
+            if (idx+1 < nums[lst_idx].size()){
+                int next_mini = nums[lst_idx][idx+1];
+                pq.push({next_mini,{lst_idx,idx+1}});
+                maxi = max(maxi,next_mini);
+            }else{
+                break;
+            }
+        }
+        return ans;
+    }
+};
