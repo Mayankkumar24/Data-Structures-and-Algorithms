@@ -1,0 +1,66 @@
+struct Node{
+    Node* links[26];
+    bool isPresent(char ch){
+        return links[ch-'a'] != NULL;
+    }
+    Node* get(char ch){
+        return links[ch-'a'];
+    }
+    void put(char ch, Node* node){
+        links[ch-'a'] = node;
+    }
+};
+class Trie{
+    Node* root;
+public:
+    Trie(){
+        root = new Node();
+    }
+    void insert(const string &a){
+        Node* node = root;
+        for (int i=0; i<a.size(); i++){
+            if (!node->isPresent(a[i])){
+                node->put(a[i],new Node());
+            }
+            node = node->get(a[i]);
+        }
+    }
+    int check(int i, string &target){
+        Node* node = root;
+        int cnt = 0;
+        while(i<target.size()){
+            if (!node->isPresent(target[i])){
+                return cnt;
+            }
+            node = node->get(target[i]);
+            i++; cnt++;
+        }
+        return cnt;
+    }
+};
+
+class Solution {
+public:
+    int n;
+    int dp[5005];
+    int solve(int i,vector<string>&words,string &target,Trie &ds){
+        if (i >= n) return 0;
+        if (dp[i] != -1) return dp[i];
+        int mini = 1e9;
+        int a = ds.check(i,target);
+        for (int k=1; k<=a; k++){
+            mini = min(mini,1+solve(i+k,words,target,ds));
+        }
+        return dp[i] = mini;
+    }
+    int minValidStrings(vector<string>& words, string target) {
+        n = target.size();
+        Trie ds;
+        for (const auto &word : words){
+            ds.insert(word);
+        }
+        memset(dp,-1,sizeof(dp));
+        int a = solve(0,words,target,ds);
+        return (a==1e9 ? -1 : a);
+    }
+};
