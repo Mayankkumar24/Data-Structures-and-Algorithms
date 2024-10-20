@@ -1,0 +1,75 @@
+struct Node{
+    Node* links[26]; int cnt = 0;
+    bool isPresent(char ch){
+        return links[ch-'a'] != NULL;
+    }
+    void put(char ch, Node* node){
+        links[ch-'a'] = node;
+    }
+    Node* get(char ch){
+        return links[ch-'a'];
+    }
+    void setEnd(){
+        cnt++;
+    }
+    int getEnd(){
+        return cnt;
+    }
+};
+
+class Trie{
+    public:
+    Node* root;
+    Trie(){
+        root = new Node();
+    }
+    void insert(string &word){
+        Node* node = root;
+        for (int i=0; i<word.size(); i++){
+            if (!node->isPresent(word[i])){
+                node->put(word[i],new Node());
+            }
+            node = node->get(word[i]);
+        }
+        node->setEnd();
+    }
+    void DFS(Node* node,string s,vector<pair<int,string>>&v){
+        if (node == nullptr) return;
+        if (node->getEnd()>0){
+            int f = node->getEnd();
+            v.push_back({f,s});
+        }
+        for (char ch = 'a'; ch <= 'z'; ch++){
+            if (node->isPresent(ch)){
+                Node* next_node = node->get(ch);
+                DFS(next_node,s+ch,v);
+            }
+        }
+    }
+};
+
+class Solution {
+public:
+    vector<string> topKFrequent(vector<string>& words, int k) {
+
+        Trie ds;
+
+        for (auto &x : words){
+            ds.insert(x);
+        }
+        string s = "";
+        vector<pair<int,string>>v;
+        ds.DFS(ds.root,s,v);
+        vector<string>ans;
+        sort(v.begin(),v.end(),[&](pair<int,string>&a,pair<int,string>&b){
+            return a.first > b.first || a.first == b.first && a.second < b.second;
+        });
+
+        for (auto &it : v){
+            if (k == 0) break;
+            ans.push_back(it.second);
+            k--;
+        }
+        return ans;
+    }
+};
