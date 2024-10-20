@@ -1,0 +1,73 @@
+struct Node{
+    Node* links[26]; bool end = false;
+    bool isPresent(char ch){
+        return links[ch-'a'] != NULL;
+    }
+    Node* get(char ch){
+        return links[ch-'a'];
+    }
+    void put(char ch, Node* node){
+        links[ch-'a'] = node;
+    }
+    void setEnd(){
+        end = true;
+    }
+    bool isEnd(){
+        return end;
+    }
+    int countChildren(){
+        int cnt = 0;
+        for (int i=0; i<26; i++){
+            if (links[i] != NULL) cnt++;
+        }
+        return cnt;
+    }
+    char nextChildren(){
+        for (int i=0; i<26; i++){
+            if (links[i] != NULL){
+                return 'a' + i;
+            }
+        }
+        return '\0';
+    }
+};
+
+class Trie{
+    public:
+    Node* root;
+    Trie(){
+        root = new Node();
+    }
+    void insert(string &word){
+        Node *node = root;
+        for (int i=0; i<word.size(); i++){
+            if (!node->isPresent(word[i])){
+                node->put(word[i],new Node());
+            }
+            node = node->get(word[i]);
+        }
+        node->setEnd();
+    }
+    string longestPrefix(){
+        Node* node = root;
+        string pref = "";
+        while(node && node->countChildren() == 1 && !node->isEnd()){
+            char nextChar = node->nextChildren();
+            pref += nextChar;
+            node = node->get(nextChar);
+        }
+        return pref;
+    }
+};
+
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        if (strs.size() == 0) return "";
+        Trie trie;
+        for (auto &x : strs){
+            trie.insert(x);
+        }
+        return trie.longestPrefix();
+    }
+};
