@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int n;
+    void solve(int i,string &s,int curr_cnt,int &max_cnt,unordered_set<string>&st){
+        if (curr_cnt + (n-i) <= max_cnt){
+            return;
+        }
+        if (i >= n){
+            max_cnt = max(curr_cnt,max_cnt);
+            return;
+        }
+        for (int j=i; j<n; j++){
+            string sub = s.substr(i,j-i+1);
+            if (st.find(sub) == st.end()){
+                st.insert(sub);
+                solve(j+1,s,curr_cnt+1,max_cnt,st);
+                st.erase(sub);
+            }
+        }
+    }
+    int maxUniqueSplit(string s) {
+        n = s.length();
+        unordered_set<string>st;
+        int curr_cnt = 0, max_cnt = 0;
+        int i=0;
+        solve(i,s,curr_cnt,max_cnt,st);
+        return max_cnt;
+    }
+};
