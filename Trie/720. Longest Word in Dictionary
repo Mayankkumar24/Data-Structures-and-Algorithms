@@ -1,0 +1,75 @@
+struct Node{
+    Node* links[26];
+    bool f = false;
+
+    bool isPresent(char &ch){
+        return links[ch-'a'] != NULL;
+    }
+    void put(char &ch, Node* newNode){
+        links[ch-'a'] = newNode;
+    }
+    Node* get(char &ch){
+        return links[ch-'a'];
+    }
+    void setEnd(){
+        f = true;
+    }
+    bool isEnd(){
+        return f;
+    } 
+};
+class Trie{
+    public:
+    Node* root;
+    Trie(){
+        root = new Node();
+    }
+    void insert(string &word){
+        Node* node = root;
+        for (int i=0; i<word.size(); i++){
+            if (!node->isPresent(word[i])){
+                node->put(word[i],new Node());
+            }
+            node = node->get(word[i]);
+        }
+        node->setEnd();
+    }
+    bool Search(string &word){
+        Node* node = root;
+        for (int i=0; i<word.size()-1; i++){
+            if (!node->isPresent(word[i])){
+                return false;
+            }
+            node = node->get(word[i]);
+            if (!node->isEnd()){
+                return false;
+            }
+
+        }
+        return true;
+    }
+};
+
+class Solution {
+public:
+    static bool comp(string &a, string &b) {
+        return a.length() < b.length();
+    }
+    string longestWord(vector<string>& words) {
+        Trie ds;
+        string ans = "";
+        sort(words.begin(),words.end(),comp);
+
+        for (auto &x : words){
+            if (ds.Search(x)){
+                if (x.length() > ans.length()){
+                    ans = x;
+                }else if (x.length() == ans.length()){
+                    ans = min(ans,x);
+                }
+            }
+            ds.insert(x);
+        }
+        return ans;
+    }
+};
