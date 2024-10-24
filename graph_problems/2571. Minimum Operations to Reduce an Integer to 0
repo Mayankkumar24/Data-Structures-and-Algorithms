@@ -1,0 +1,42 @@
+class Solution {
+public:
+    int minOperations(int n) {
+        
+        vector<int>powers;
+        int largest = 1e5;
+        int i = 1, x = 1;
+        while(x < largest){
+            powers.push_back(x);
+            x = pow(2,i); i++;
+        }
+        queue<pair<int,int>>q;
+        unordered_set<int>vis;
+        q.push({n,0});
+
+        while(!q.empty()){
+            int size = q.size();
+            while(size--){
+                int num = q.front().first;
+                int ops = q.front().second;
+                q.pop();
+
+                if (num == 0) return ops;
+
+                for (int val : powers){
+                    if (num+val < largest && vis.count(num+val) ==0){
+                        q.push({num+val,ops+1});
+                        vis.insert(num+val);
+                    }
+                }
+                for (int val : powers){
+                    if (num-val < largest && vis.count(num-val) ==0){
+                        q.push({num-val,ops+1});
+                        vis.insert(num-val);
+                    }
+                }
+
+            }
+        }
+        return -1;
+    }
+};
