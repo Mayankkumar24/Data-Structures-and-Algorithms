@@ -1,0 +1,35 @@
+class Solution {
+public:
+    int dp[100005];
+    int find_new_ind(int curr_id,vector<vector<int>>& offers){
+        int new_ind = offers.size();
+        int low = curr_id+1, high = offers.size()-1;
+
+        while(low <= high){
+            int mid = (low + high)/2;
+            if (offers[mid][0] > offers[curr_id][1]){
+                new_ind = mid; high = mid-1;
+            }else{
+                low = mid+1;
+            }
+        }
+        return new_ind;
+    }
+    int solve(int i,vector<vector<int>>& offers){
+        if (i >= offers.size()) return 0;
+        if (dp[i] != -1) return dp[i];
+        int not_buy = 0;
+        not_buy = solve(i+1,offers);
+        int buy = 0;
+        int new_ind = find_new_ind(i,offers);
+        buy = offers[i][2] + solve(new_ind,offers);
+        return dp[i] = max(not_buy,buy);
+    }
+    int maximizeTheProfit(int n, vector<vector<int>>& offers) {
+        int ans = 0;
+        sort(offers.begin(),offers.end());
+        memset(dp,-1,sizeof(dp));
+        ans += solve(0,offers);
+        return ans;
+    }
+};
