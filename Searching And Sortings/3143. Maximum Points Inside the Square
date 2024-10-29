@@ -1,0 +1,42 @@
+class Solution {
+public:
+    int ans = -1e9;
+    unordered_set<char>vis;
+    bool check(int &mid,string &s,vector<vector<int>>&points){
+        vis.clear();
+        int cnt = 0, f = 0;
+        for (int i=0; i<s.size(); i++){
+            int a = abs(points[i][0]);
+            int b = abs(points[i][1]);
+            if (max(a,b) <= mid){
+                if (vis.find(s[i]) != vis.end()){
+                    f = 1; break;
+                }else{
+                    cnt++; vis.insert(s[i]);
+                }
+            }
+        }
+        if (f == 0){
+            ans = max(ans,cnt); return true;
+        }else{
+            return false;
+        }
+    }
+    int maxPointsInsideSquare(vector<vector<int>>& points, string s) {
+        int low = 0, high = -1e9;
+        //int maxi = -1e9;
+        for (auto &x : points){
+            int v = max(abs(x[0]),abs(x[1]));
+            high = max(high,v);
+        }
+        while(low <= high){
+            int mid = (low + high)/2;
+            if (check(mid,s,points)){
+                low = mid+1;
+            }else{
+                high = mid-1;
+            }
+        }
+        return ans;
+    }
+};
