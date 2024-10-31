@@ -1,0 +1,40 @@
+class Solution {
+public:
+    int leftSolve(int i,int prev,vector<int>&nums,vector<vector<int>>&dp){
+        if (i == -1) return 0;
+        int pick = 0;
+        if (dp[i][prev] != -1) return dp[i][prev];
+        if (nums[i] < nums[prev]){
+            pick = 1 + leftSolve(i-1,i,nums,dp);
+        }
+        int skip = leftSolve(i-1,prev,nums,dp);
+        return dp[i][prev] = max(pick,skip);
+    }
+    int rightSolve(int i,int prev,vector<int>&nums,vector<vector<int>>&dp){
+        int n = nums.size();
+        if (i == n) return 0;
+        int pick = 0;
+        if (dp[i][prev] != -1) return dp[i][prev];
+        if (nums[i] < nums[prev]){
+            pick = 1 + rightSolve(i+1,i,nums,dp);
+        }
+        int skip = rightSolve(i+1,prev,nums,dp);
+        return dp[i][prev] = max(pick,skip);
+    }
+
+    int minimumMountainRemovals(vector<int>& nums) {
+        int n = nums.size();
+        int ans = n;
+        vector<vector<int>>dpleft(n,vector<int>(n,-1));
+        vector<vector<int>>dpright(n,vector<int>(n,-1));
+
+        for (int i=1; i<n-1; i++){
+            int left = leftSolve(i-1,i,nums,dpleft);
+            int right = rightSolve(i+1,i,nums,dpright);
+            if (left && right){
+                ans = min(ans,n-(left+right+1));
+            }
+        }
+        return ans;
+    }
+};
