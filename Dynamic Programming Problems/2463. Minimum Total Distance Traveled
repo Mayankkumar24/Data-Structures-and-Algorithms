@@ -1,0 +1,25 @@
+class Solution {
+public:
+    typedef long long ll;
+    int rr,ff;
+    ll solve(int i, int j,int limit,vector<int>&robot,vector<vector<int>>&factory,vector<vector<vector<ll>>>&dp){
+        if (i == rr || j==ff) return 0;
+        if (dp[i][j][limit] != -1) return dp[i][j][limit];
+        ll pos = factory[j][0], take = LLONG_MAX, not_take = LLONG_MAX/2;
+        if (limit > 0){
+            take = abs(robot[i]-pos) + solve(i+1,j,limit-1,robot,factory,dp);
+        }
+        if (j+1 < ff){
+            not_take = solve(i,j+1,factory[j+1][1],robot,factory,dp);
+        }
+        return dp[i][j][limit] =  min(take,not_take);
+    }
+    long long minimumTotalDistance(vector<int>& robot, vector<vector<int>>& factory) {
+        rr = robot.size(); ff = factory.size();
+        sort(robot.begin(),robot.end());
+        sort(factory.begin(),factory.end());
+        vector<vector<vector<ll>>>dp(rr+1,vector<vector<ll>>(ff+1,vector<ll>(rr+1,-1)));
+        ll res = solve(0,0,factory[0][1],robot,factory,dp);
+        return res;
+    }
+};
