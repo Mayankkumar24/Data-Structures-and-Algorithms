@@ -1,0 +1,25 @@
+class Solution {
+public:
+    typedef long long ll;
+    long long mod = 1e9 + 7;
+    ll solve(ll c, ll t, vector<vector<ll>>&dp){
+        if (c+t <= 25) return 0;
+        if (dp[c][t] != -1) return dp[c][t];
+        ll ans = (1 + solve(0,t-(26-c),dp) + solve(1,t-(26-c),dp))%mod;
+        return dp[c][t] = ans;
+    }
+    int lengthAfterTransformations(string s, int t) {
+        ll n = s.size();
+        vector<vector<ll>>dp(26,vector<ll>((ll) t+1,-1));
+        for (ll i=0; i<26; i++){
+            solve(i,t,dp);
+        }
+        ll ans = n;
+        for (ll i=0; i<n; i++){
+            if (dp[s[i]-'a'][t] != -1){
+                ans = (ans+dp[s[i]-'a'][t])%mod;
+            }
+        }
+        return ans;
+    }
+};
