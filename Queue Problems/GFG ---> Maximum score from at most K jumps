@@ -1,0 +1,61 @@
+//{ Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+
+// } Driver Code Ends
+class Solution {
+  public:
+    int getScore(vector<int>& arr, int k) {
+        // code here
+        int n = arr.size();
+        deque<int>dq;
+        dq.push_back(0); vector<int>dp(n);
+        dp[0] = arr[0];
+        
+        for (int i=1; i<n; i++){
+            if (dq.front() < i-k){
+                dq.pop_front();
+            }
+            dp[i] = arr[i] + dp[dq.front()];
+            
+            while(!dq.empty() && dp[i] >= dp[dq.back()]){
+                dq.pop_back();
+            }
+            dq.push_back(i);
+        }
+        return dp[n-1];
+    }
+};
+
+
+//{ Driver Code Starts.
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(0);
+
+    int t;
+    cin >> t;
+    cin.ignore();
+    while (t--) {
+        string input;
+        getline(cin, input);
+        istringstream iss(input);
+        vector<int> arr;
+        int num;
+
+        // Read integers from the input string
+        while (iss >> num) {
+            arr.push_back(num);
+        }
+        int k;
+        cin >> k;
+        cin.ignore();
+        Solution ob;
+        cout << ob.getScore(arr, k) << endl;
+        cout << "~" << endl;
+    }
+    return 0;
+}
+// } Driver Code Ends
