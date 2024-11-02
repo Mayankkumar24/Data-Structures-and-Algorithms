@@ -1,0 +1,25 @@
+class Solution {
+public:
+    int n,m;
+    int dp[22][22];
+    bool solve(int i, int j, string &s, string &p){
+        if (i >= n && j >= m) return dp[i][j] = true;
+        if (dp[i][j] != -1) return dp[i][j];
+        if (j >= m) return dp[i][j] = false;
+        bool match = false;
+        if (i<n && (s[i] == p[j] || p[j] == '.')){
+            match = true;
+        }
+        if (j+1 < m && p[j+1] == '*'){
+            return dp[i][j] = solve(i,j+2,s,p) || (match && (solve(i+1,j,s,p)));
+        }
+        if (match) return dp[i][j] = solve(i+1,j+1,s,p);
+        return dp[i][j] = false;
+    }
+    bool isMatch(string s, string p) {
+        n = s.size();
+        m = p.size();
+        memset(dp,-1,sizeof(dp));
+        return solve(0,0,s,p);
+    }
+};
