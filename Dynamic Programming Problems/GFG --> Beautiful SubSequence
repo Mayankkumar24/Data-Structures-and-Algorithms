@@ -1,0 +1,53 @@
+//{ Driver Code Starts
+#include <bits/stdc++.h>
+using namespace std;
+
+
+// } Driver Code Ends
+
+class Solution {
+  public:
+    int n;
+    int dp[1001][1001];
+    int solve(int i, int prev,vector<int>&arr){
+        if (i < 0) return 0;
+        if (dp[i][prev] != -1) return dp[i][prev];
+        int res = 0;
+        if (prev == 0 || arr[prev]%arr[i] == 0){
+            res = max(1+solve(i-1,i,arr),solve(i-1,prev,arr));
+        }
+        res = max(res,solve(i-1,prev,arr));
+        return dp[i][prev] = res;
+    }
+    int longest_Subsequence(vector<int>& arr) {
+        // Complete the function
+        n = arr.size();
+        sort(arr.begin(),arr.end());
+        memset(dp,-1,sizeof(dp));
+        int ans = solve(n-1,0,arr);
+        if (ans <= 1) return -1;
+        return ans;
+    }
+};
+
+//{ Driver Code Starts.
+int main() {
+    string ts;
+    getline(cin, ts);
+    int t = stoi(ts);
+    while (t--) {
+        vector<int> arr;
+        string input;
+        getline(cin, input);
+        stringstream ss(input);
+        int number;
+        while (ss >> number) {
+            arr.push_back(number);
+        }
+        Solution obj;
+        cout << obj.longest_Subsequence(arr) << endl;
+        cout << "~" << endl;
+    }
+}
+
+// } Driver Code Ends
