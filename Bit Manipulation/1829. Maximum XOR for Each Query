@@ -1,0 +1,18 @@
+class Solution {
+public:
+    vector<int> getMaximumXor(vector<int>& nums, int maximumBit) {
+        int n = nums.size();
+        vector<int>res(n);
+        int mask = ((1 << maximumBit)-1); // CREATING A MASK WHICH HAS ALL BIT AS 1 AND SIZE AS 2POWER MB CAN HAVE IN HIS BINARY REPRESENTATION
+        int Xor = 0;
+        for (auto &x : nums) Xor ^= x;
+
+        for (int i=n-1; i>=0; i--){
+            int k = mask ^ Xor; // FLIP ALL THE BITS OF XOR
+            res[i] = k;
+            Xor = (Xor ^ nums[i]);
+        }
+        reverse(res.begin(),res.end());
+        return res;
+    }
+};
