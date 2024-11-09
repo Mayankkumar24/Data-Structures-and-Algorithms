@@ -1,0 +1,14 @@
+class Solution {
+public:
+    typedef long long ll;
+    long long minEnd(int n, int x) {
+        
+
+        ll ans = (ll) x;
+
+        for (int i=2; i<=n; i++){
+            ans = (ans+1) | (ll )x;
+        }
+        return ans;
+    }
+};
