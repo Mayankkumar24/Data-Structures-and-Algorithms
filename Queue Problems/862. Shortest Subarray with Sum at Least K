@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int shortestSubarray(vector<int>& nums, int k) {
+        int n = nums.size();
+        deque<int>deq;
+        vector<long long>pre(n,0);
+        int j = 0, ans = INT_MAX;
+
+        while(j<n){
+            if (j == 0){
+                pre[j] = nums[j];
+            }else{
+                pre[j] = (pre[j-1] + nums[j]);
+            }
+            if (pre[j] >= k){
+                ans = min(ans,j+1);
+            }
+            while(!deq.empty() && pre[j]-pre[deq.front()] >= k){
+                ans = min(ans,j-deq.front()); deq.pop_front();
+            }
+            while(!deq.empty() && pre[j] <= pre[deq.back()]){
+                deq.pop_back();
+            }
+            deq.push_back(j);
+            j++;
+        }
+        return (ans == INT_MAX ? -1 : ans);
+    }
+};
