@@ -1,0 +1,20 @@
+class Solution {
+public:
+    int takeCharacters(string s, int k) {
+        int n = s.size();
+        unordered_map<char,int>cnt;
+        for (auto &ch : s) cnt[ch]++;
+        if (cnt['a'] < k || cnt['b'] < k || cnt['c'] < k) return -1;
+        int reqA = cnt['a'] - k, reqB = cnt['b'] - k, reqC = cnt['c'] - k;
+        int length_to_remove = INT_MIN,  l = 0;
+        unordered_map<char,int>window;
+        for (int r = 0; r<n; r++){
+            window[s[r]]++;
+            while(window['a']>reqA || window['b']>reqB || window['c']>reqC){
+                window[s[l]]--; l++;
+            }
+            length_to_remove = max(length_to_remove,r-l+1);
+        }
+        return n  - length_to_remove;
+    }
+};
