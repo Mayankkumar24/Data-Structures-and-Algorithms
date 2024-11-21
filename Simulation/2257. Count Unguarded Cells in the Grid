@@ -1,0 +1,39 @@
+class Solution {
+public:
+    int countUnguarded(int m, int n, vector<vector<int>>& guards, vector<vector<int>>& walls) {
+        vector<vector<char>>matrix(m,vector<char>(n,'.'));
+        for (auto &x : guards){
+            matrix[x[0]][x[1]] = 'G';
+        }
+        for (auto &x : walls){
+            matrix[x[0]][x[1]] = 'W';
+        }
+        for (int i=0; i<m; i++){
+            for (int j=0; j<n; j++){
+                if (matrix[i][j] == 'G'){
+                    for (int x=i+1; x<m && matrix[x][j] != 'G' && matrix[x][j] != 'W';x++){
+                        matrix[x][j] = 'X';
+                    }
+                    for (int x=i-1; x>=0 && matrix[x][j] != 'G' && matrix[x][j] != 'W';x--){
+                        matrix[x][j] = 'X';
+                    }
+                    for (int y = j+1; y<n && matrix[i][y] != 'G' && matrix[i][y] != 'W'; y++){
+                        matrix[i][y] = 'X';
+                    }
+                    for (int y = j-1; y>=0 && matrix[i][y] != 'G' && matrix[i][y] != 'W'; y--){
+                        matrix[i][y] = 'X';
+                    }
+
+
+                }
+            }
+        }
+        int ans = 0;
+        for (int i=0; i<m; i++){
+            for (int j=0; j<n; j++){
+                if (matrix[i][j] == '.') ans++;
+            }
+        }
+        return ans;
+    }
+};
