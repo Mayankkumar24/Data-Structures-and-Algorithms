@@ -1,0 +1,30 @@
+class Solution {
+public:
+    int solve(int i, int &k, int op1, int op2, vector<int>&nums, vector<vector<vector<int>>>&dp){
+        int n = nums.size();
+        if (i >= n) return 0;
+        if (dp[i][op1][op2] != -1) return dp[i][op1][op2];
+        int option1 = 1e9, option2 = 1e9, option3 = 1e9, option4 = 1e9;
+        int notPick = 1e9;
+        if (op1 > 0){
+            option1 = min(option1,(nums[i]/2 + nums[i]%2)+solve(i+1,k,op1-1,op2,nums,dp));
+        }
+        if (op2 > 0 && nums[i] >= k){
+            option2 = min(option2,(nums[i]-k) + solve(i+1,k,op1,op2-1,nums,dp));
+        }
+        if (op1 > 0 && op2 > 0 && (nums[i]/2 + nums[i]%2) >= k){
+            option3 = min(option3,((nums[i]/2+nums[i]%2)-k) + solve(i+1,k,op1-1,op2-1,nums,dp));
+        }
+        if (op1 > 0 && op2 > 0 && (nums[i] >= k)){
+            option4 = min(option4,((nums[i]-k)/2 + (nums[i]-k)%2) + solve(i+1,k,op1-1,op2-1,nums,dp));
+        }
+        notPick = nums[i]+solve(i+1,k,op1,op2,nums,dp);
+        return dp[i][op1][op2] = min({option1,option2,option3,option4,notPick});
+    }
+    int minArraySum(vector<int>& nums, int k, int op1, int op2) {
+        int n = nums.size();
+        vector<vector<vector<int>>>dp(n+1,vector<vector<int>>(op1+1,vector<int>(op2+1,-1)));
+        return solve(0,k,op1,op2,nums,dp);
+
+    }
+};
