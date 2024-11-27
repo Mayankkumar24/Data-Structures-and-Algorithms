@@ -1,0 +1,24 @@
+class Solution {
+public:
+    vector<int> shortestDistanceAfterQueries(int n, vector<vector<int>>& queries) {
+        unordered_map<int,int>adj;
+        for (int i=1; i<n; i++){
+            adj[i-1] = i;
+        }
+        vector<int>ans;
+        for (auto &x : queries){
+            int i = x[0], j = x[1];
+            if ((adj.find(i) != adj.end()) && (adj[i] < j)){
+                int v = i;
+                while(v<j){
+                    int v2 = adj[v];
+                    adj.erase(v);
+                    v = v2;
+                }
+                adj[i] = j;
+            }
+            ans.push_back(adj.size());
+        }
+        return ans;
+    }
+};
