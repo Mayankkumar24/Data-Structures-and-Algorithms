@@ -1,0 +1,31 @@
+class Solution {
+public:
+    typedef vector<int>p;
+    int minimumObstacles(vector<vector<int>>& grid) {
+        int n = grid.size(), m = grid[0].size();
+        vector<vector<int>>Cost(n,vector<int>(m,INT_MAX));
+        Cost[0][0] = 0;
+        priority_queue<p,vector<p>,greater<p>>pq;
+        pq.push({0,0,0});
+        vector<int>row = {-1,1,0,0};
+        vector<int>col = {0,0,-1,1};
+
+        while(!pq.empty()){
+            auto x = pq.top();
+            int CurrCost = x[0], r = x[1], c = x[2];
+            pq.pop();
+            if ((r==n-1) && (c==m-1)){
+                return CurrCost;
+            }
+            for (int i=0; i<4; i++){
+                int nr = row[i] + r;
+                int nc = col[i] + c;
+                if (nr<n && nr>=0 && nc<m && nc>=0 && CurrCost + grid[nr][nc] < Cost[nr][nc]){
+                    Cost[nr][nc] = CurrCost + grid[nr][nc];
+                    pq.push({CurrCost+grid[nr][nc],nr,nc});
+                }
+            }
+        }
+        return Cost[n-1][m-1];
+    }
+};
