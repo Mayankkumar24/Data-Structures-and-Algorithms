@@ -1,0 +1,22 @@
+class Solution {
+public:
+    int isPrefixOfWord(string sentence, string searchWord) {
+        stringstream ss(sentence);
+        string word;
+        int index = 0;
+        while(ss >> word){
+            int i = 0, j = 0;
+            while((i<word.size()) && (j<searchWord.size())){
+                if (word[i] != searchWord[j]){
+                    break;
+                }
+                i++; j++;
+            }
+            if (j>=searchWord.size()){
+                return index+1;
+            }
+            index = index+1;
+        }
+        return -1;
+    }
+};
