@@ -1,0 +1,26 @@
+class Solution {
+public:
+    int maximumBeauty(vector<int>& nums, int k) {
+        
+        int n = nums.size();
+
+        vector<pair<int,int>>temp(n);
+        for (int i=0; i<n; i++){
+            temp[i] = {nums[i]-k,nums[i]+k};
+        }
+        sort(temp.begin(),temp.end());
+        int maxBeauty = 0;
+
+        deque<int>dq;
+
+        for (int i=0; i<n; i++){
+
+            while((!dq.empty()) && (dq.front() < temp[i].first)){
+                dq.pop_front();
+            }
+            dq.push_back(temp[i].second);
+            maxBeauty = max(maxBeauty,(int) dq.size());
+        }
+        return maxBeauty;
+    }
+};
