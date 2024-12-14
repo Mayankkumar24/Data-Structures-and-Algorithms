@@ -1,0 +1,27 @@
+TIME COMPLEXITY ---> O(N*LOG(SIZE OF MAP)), IN WORST CASE MAP CONTAINS = 3 NUMBERS;
+SPACE COMPLEXITY --> O(3);
+
+class Solution {
+public:
+    long long continuousSubarrays(vector<int>& nums) {
+        long long ans = 0;
+        int j = 0;
+
+        int n = nums.size();
+
+        map<int,int>mp;
+
+        for (int i=0; i<n; i++){
+            mp[nums[i]]++;
+            while(mp.rbegin()->first - mp.begin()->first > 2){
+                mp[nums[j]]--;
+                if (mp[nums[j]] == 0){
+                    mp.erase(nums[j]);
+                }
+                j++;
+            }
+            ans += (long long) (i-j+1);
+        }
+        return ans;
+    }
+};
