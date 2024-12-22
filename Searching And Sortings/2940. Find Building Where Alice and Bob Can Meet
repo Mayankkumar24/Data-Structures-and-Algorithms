@@ -1,0 +1,67 @@
+class Solution {
+public:
+    int binarySearch(int h,vector<pair<int ,int>> &st){
+        int i=0, j=st.size()-1;
+        int idx=-1;
+        while(i<=j){
+            int mid=i+(j-i)/2;
+            if(st[mid].first>h){
+                idx=st[mid].second;
+                i=mid+1;
+            }
+            else j=mid-1;
+        }
+        return idx;
+    }
+    vector<int> leftmostBuildingQueries(vector<int>& heights, vector<vector<int>>& queries) {
+        int n=queries.size();
+        vector<int> ans(n,-1);
+        // TO STORE QUERIES WHICH NEEDS TO BE PROCESSED SEPARATELY
+        // POSITION OF RIGHT SIDE PERSON-> (LEAST REQUIRED HEIGHT,QUERY NUMBER)
+        unordered_map<int,vector<pair<int, int>>> newQue;
+        
+        //EXTRACTING THE QUERIES WHICH NEEDS TO BE PROCEESED SEPARATELY
+        for(int i=0;i<n;i++){
+            // SORTING ALICE AND BOB POSITION IN INCREASING ORDER,
+            // BECAUSE HERE ORDER OF ALICE AND BOB DOES NOT MATTER
+            if(queries[i][0]>queries[i][1]){
+                swap(queries[i][0], queries[i][1]);
+            }
+            // IF PERSON AT THE RIGHT SIDE IS STANDING AT GREATER HIEGHT THAN PERSON AT THE LEFT SIDE
+            // OR IF THEY BOTH ARE STANDING AT THE SAME POSITION
+            // THEN ANSWER WILL BE THE RIGHT SIDE PERSON POSITION
+            ans[i]=(heights[queries[i][1]]>heights[queries[i][0]] || queries[i][0]==queries[i][1])? queries[i][1]:-1;
+
+            if(ans[i]==-1){
+                //STORING QUERIES WHICH NEEDS TO BE PROCESSED TOGETHER
+                newQue[queries[i][1]].push_back({heights[queries[i][0]],i});
+            }
+        }
+
+        int m=heights.size();
+        // VECTOR USED AS STACK
+        vector<pair<int ,int>> st;
+        for(int i=m-1;i>=0;i--){
+            // CHECKING IF THERE IS ANY QUERY AT CURRENT INDEX
+            if(newQue.count(i)){
+                for(auto q:newQue[i]){
+                    int h=q.first;
+                    int idx=q.second;
+                    // CHECK IF THERE IS ANY POSITION AT RIGHT SIDE 
+                    // HAVING HEIGHT GREATER THAN THE REQUIRED HEIGHT
+                    int res=binarySearch(h,st);// CHECK IF 
+                    if(res!=-1){ // IF NO GREATER HEIGHT FOUND ANSWER WILL BE -1
+                        ans[idx]=res;
+                    }
+                }
+            }
+            // MAINTAINING THE MONOTONIC DECREASING NATURE OF STACK
+            while(st.size()>0 and st.back().first<=heights[i]){
+                st.pop_back();
+            }
+            // PUSH THE CURRENT HEIGHT IN STACK
+            st.push_back({heights[i],i});
+        }
+        return ans;
+    }
+};
