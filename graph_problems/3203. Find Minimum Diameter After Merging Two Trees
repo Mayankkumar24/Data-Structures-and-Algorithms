@@ -1,0 +1,47 @@
+class Solution {
+public:
+    unordered_map<int,vector<int>> BuildGraph(vector<vector<int>>& edges){
+        unordered_map<int,vector<int>>graph;
+        for (auto &x : edges){
+            graph[x[0]].push_back(x[1]);
+            graph[x[1]].push_back(x[0]);
+        }
+        return graph;
+    }
+    pair<int,int>BFS(unordered_map<int,vector<int>>&graph, int source){
+        unordered_map<int,bool>visited;
+        visited[source] = true;
+        queue<int>q; q.push(source);
+        int distance = 0, FarthestNode = source;
+
+        while(!q.empty()){
+            int size = q.size();
+            while(size--){
+                int curr = q.front(); q.pop();
+                FarthestNode = curr;
+                for (auto &ngbr : graph[curr]){
+                    if (visited[ngbr] == false){
+                        visited[ngbr] = true;
+                        q.push(ngbr);
+                    }
+                }
+            }
+            if (!q.empty()) distance++;
+        }
+        return {FarthestNode,distance};
+    }
+    int FindDiameter(unordered_map<int,vector<int>>&graph){
+        auto [FarthestNode,dist] = BFS(graph,0);
+        auto [OtherEnd,diameter] = BFS(graph,FarthestNode);
+        return diameter;
+    }
+    int minimumDiameterAfterMerge(vector<vector<int>>& edges1, vector<vector<int>>& edges2) {
+        unordered_map<int,vector<int>>graph1 = BuildGraph(edges1);
+        unordered_map<int,vector<int>>graph2 = BuildGraph(edges2);
+        
+        int d1 = FindDiameter(graph1);
+        int d2 = FindDiameter(graph2);
+        int combine = (d1+1)/2 + (d2+1)/2 + 1;
+        return max({d1,d2,combine});
+    }
+};
