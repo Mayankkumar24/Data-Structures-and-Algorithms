@@ -1,0 +1,47 @@
+SPACE COMPLEXTIY ----> O(N*3);
+TIME COMPLEIXTY  ----> O(N) FOR SLIDING WINDOW + O(N) FOR SOLVE FUNCITON + O(N*3) FOR HELPER FUNCTION.
+
+
+
+
+
+class Solution {
+public:
+    int dp[20001][4];
+    int helper(vector<int>&nums,int cnt,int i, int &k){
+        if (cnt == 0) return 0;
+        if (i >= nums.size()) return INT_MIN;
+        if (dp[i][cnt] != -1) return dp[i][cnt];
+        int take = nums[i] + helper(nums,cnt-1,i+k,k);
+        int skip = helper(nums,cnt,i+1,k);
+        return dp[i][cnt] = max(take,skip);
+    }
+    void solve(vector<int>&nums,vector<int>&res,int cnt,int i, int &k){
+        if (cnt == 0) return;
+        if (i >= nums.size()) return ;
+        int take = nums[i] + helper(nums,cnt-1,i+k,k);
+        int skip = helper(nums,cnt,i+1,k);
+        if (take >= skip){
+            res.push_back(i);
+            solve(nums,res,cnt-1,i+k,k);
+        }else{
+            solve(nums,res,cnt,i+1,k);
+        }
+    }
+    vector<int> maxSumOfThreeSubarrays(vector<int>& nums, int k) {
+        memset(dp,-1,sizeof(dp));
+        vector<int>new_nums;
+        int n = nums.size(), i = 0, j = 0, sum = 0;
+        vector<int>res;
+        while(i<n){
+            sum += nums[i];
+            if (i-j+1 == k){
+                new_nums.push_back(sum);
+                sum -= nums[j]; j++;
+            }
+            i++;
+        }
+        solve(new_nums,res,3,0,k);
+        return res;
+    }
+};
