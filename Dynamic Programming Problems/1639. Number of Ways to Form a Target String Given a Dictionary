@@ -1,0 +1,20 @@
+class Solution:
+    def numWays(self, words: List[str], target: str) -> int:
+        m = len(target)
+        k = len(words[0]); dp = [[-1] * k for _ in range(m)]
+        freq = [[0] * k for _ in range(26)]; mod = 10 **9 + 7
+        for word in words:
+            for i in range(len(word)):
+                c = word[i]
+                freq[ord(c) - ord('a')][i] += 1
+        return self.dfs(0,0,m,k,freq,dp,mod,target)
+    def dfs(self,i,j,m,k,freq,dp,mod,target):
+        if (i == m):
+            return 1
+        if (j == k):
+            return 0
+        if dp[i][j] != -1:
+            return dp[i][j]
+        dp[i][j] = self.dfs(i,j+1,m,k,freq,dp,mod,target)
+        dp[i][j] +=  freq[ord(target[i]) - ord('a')][j] * self.dfs(i+1,j+1,m,k,freq,dp,mod,target)
+        return dp[i][j] % mod
