@@ -1,0 +1,16 @@
+class Solution {
+public:
+    int mod = 1e9 + 7;
+    int solve(int len,int &z, int &o,int &low, int &high,vector<int>&dp){
+        if (len > high) return 0;
+        if (dp[len] != -1) return dp[len];
+        (dp[len] = 1 ? len >= low : 0);
+        int appz = solve(len+z,z,o,low,high,dp);
+        int appo = solve(len+o,z,o,low,high,dp);
+        return dp[len] += (appz + appo)%mod;
+    }
+    int countGoodStrings(int low, int high, int zero, int one) {
+        vector<int>dp(high+1,-1);
+        return solve(0,zero,one,low,high,dp)%mod;
+    }
+};
