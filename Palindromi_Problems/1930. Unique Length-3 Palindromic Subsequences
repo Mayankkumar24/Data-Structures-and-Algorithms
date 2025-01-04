@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int countPalindromicSubsequence(string s) {
+        unordered_map<char,vector<int>>mp;
+        unordered_set<string>st;
+        vector<int>vec;
+        string temp = "";
+        int res = 0;
+
+        for (int i=0; i<s.size(); i++){
+            mp[s[i]].push_back(i);
+        }
+        for (auto &it : mp){
+            st.clear();
+            vec = it.second;
+            for (int i=vec[0]+1; i<vec.back(); i++){
+                temp = it.first + s[i] + it.first;
+                st.insert(temp);
+            }
+            res += st.size();
+        }
+        return res;
+    }
+};
