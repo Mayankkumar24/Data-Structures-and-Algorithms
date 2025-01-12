@@ -1,0 +1,33 @@
+class Solution {
+public:
+    bool canBeValid(string s, string locked) {
+        int n = s.size();
+        stack<int>openIdx;
+        stack<int>unlockIdx;
+
+        for (int i=0; i<n; i++){
+            bool unlock = (locked[i] == '0');
+            if (unlock){
+                unlockIdx.push(i); continue;
+            }
+            if (s[i] == '('){
+                openIdx.push(i); continue;
+            }
+            if (s[i] == ')'){
+                if (!openIdx.empty()){
+                    openIdx.pop();
+                    continue;
+                }
+                if (!unlockIdx.empty()){
+                    unlockIdx.pop(); continue;
+                }
+                return false;
+            }
+        }
+        while((!openIdx.empty()) && (!unlockIdx.empty()) && (openIdx.top() < unlockIdx.top())){
+            openIdx.pop();
+            unlockIdx.pop();
+        }
+        return openIdx.empty() && unlockIdx.size()%2 == 0;
+    }
+};
