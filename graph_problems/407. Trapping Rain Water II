@@ -1,0 +1,49 @@
+TIME COMPLEXITY -----> O(N*M*LOG(N*M));
+SPACE COMPLEXITY ----> O(N*M);
+
+
+
+class Solution {
+public:
+    typedef vector<int>v;
+    int trapRainWater(vector<vector<int>>& heightMap) {
+        int n = heightMap.size(),m = heightMap[0].size();
+        priority_queue<v,vector<v>,greater<>>pq;
+        vector<vector<bool>>vis(n,vector<bool>(m,0));
+        vector<vector<int>>dir = {{0,1},{0,-1},{1,0},{-1,0}};
+        int i=0,j = 0;
+        while(j<m){
+            pq.push({heightMap[i][j],i,j}); vis[i][j] = true;
+            j++;
+        }
+        i = 0, j = 0;
+        while(i<n){
+            pq.push({heightMap[i][j],i,j}); vis[i][j] = true;
+            i++;
+        }
+        i = 0; j = m-1;
+        while(i<n){
+            pq.push({heightMap[i][j],i,j}); vis[i][j] = true;
+            i++;
+        }
+        i = n-1; j = 0;
+        while(j<m){
+            pq.push({heightMap[i][j],i,j}); vis[i][j] = true;
+            j++;
+        }
+        int water = 0;
+        while(!pq.empty()){
+            auto curr = pq.top(); pq.pop();
+            int height = curr[0], i = curr[1], j = curr[2];
+            for (int idx = 0; idx <=3; idx++){
+                int ni = i+dir[idx][0], nj = j+dir[idx][1];
+                if (ni < n && ni >=0 && nj < m && nj >= 0 && !vis[ni][nj]){
+                    water += max(height-heightMap[ni][nj],0);
+                    pq.push({max(height,heightMap[ni][nj]),ni,nj});
+                    vis[ni][nj] = true;
+                }
+            }
+        }
+        return water;
+    }
+};
