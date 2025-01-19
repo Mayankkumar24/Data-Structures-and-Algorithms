@@ -1,0 +1,74 @@
+TIME COMPLEXITY ----> O(4^(M*N));
+SPACE COMPELXITY ---> O(M*N);
+
+
+class Solution {
+public:
+    vector<vector<int>>dir = {{0,1},{0,-1},{1,0},{-1,0}};
+    int minCost(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+        vector<vector<bool>>vis(n,vector<bool>(m,false));
+        return dfs(0,0,grid,vis,0);
+    }
+    int dfs(int i, int j,vector<vector<int>>&grid,vector<vector<bool>>&vis,int cost){
+        int n = grid.size();
+        int m = grid[0].size();
+        if (i == n-1 && j == m-1){
+            return cost;
+        }
+        int mincost = INT_MAX;
+        vis[i][j] = true;
+        for (int idx = 0; idx <= 3; idx++){
+            int newi = i + dir[idx][0];
+            int newj = j + dir[idx][1];
+            if (newi < n && newi >= 0 && newj < m && newj >= 0 && !vis[newi][newj]){
+                int nextcost = cost + ((grid[i][j]-1 != idx) ? 1 : 0);
+                mincost = min(mincost,dfs(newi,newj,grid,vis,nextcost));
+            }
+        }
+        vis[i][j] = false;
+        return mincost;
+    }
+};
+
+
+//Approach-2 (Dijkstra's Algorithm) - Accepted
+//T.C : O((m*n) * log(m*n))
+//S.C : O(m*n)
+
+
+class Solution {
+public:
+    
+    typedef vector<int>v;
+    int minCost(vector<vector<int>>& grid) {
+        int n = grid.size(), m = grid[0].size();
+        vector<vector<int>>cost(n,vector<int>(m,INT_MAX));
+        cost[0][0] = 0;
+        priority_queue<v,vector<v>,greater<>>pq;
+        vector<vector<int>>dir = {{0,1},{0,-1},{1,0},{-1,0}};
+        pq.push({0,0,0});
+        while(!pq.empty()){
+            auto curr = pq.top();
+            pq.pop();
+            int currcost = curr[0];
+            int i = curr[1], j = curr[2];
+            for (int idx = 0; idx<=3; idx++){
+                int newi = i+dir[idx][0];
+                int newj = j+dir[idx][1];
+                
+                if (newi<n && newi >= 0 && newj < m && newj >= 0){
+                    int griddir = grid[i][j];
+                    int newcost = currcost + ((griddir-1 != idx) ? 1 : 0);
+                    if (newcost < cost[newi][newj]){
+                        cost[newi][newj] = newcost;
+                        pq.push({newcost,newi,newj});
+                    }
+                }
+            }
+
+        }
+        return cost[n-1][m-1];
+    }
+};
