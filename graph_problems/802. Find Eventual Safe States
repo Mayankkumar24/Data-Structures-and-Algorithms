@@ -1,0 +1,29 @@
+class Solution {
+public:
+    bool isCycle(int &node,vector<bool>&vis,vector<bool>&inrecursion,vector<vector<int>>&graph){
+        vis[node] = true;
+        inrecursion[node] = true;
+        for (int &neigh : graph[node]){
+            if (!vis[neigh] && isCycle(neigh,vis,inrecursion,graph)){
+                return true;
+            }else if (inrecursion[neigh] == true) return true;
+        }
+        inrecursion[node] = false;
+        return false;
+    }
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        int v = graph.size();
+        vector<bool>vis(v,false);
+        vector<bool>inrecursion(v,false);
+        vector<int>ans;
+        for (int i=0; i<v; i++){
+            if (!vis[i]){
+                isCycle(i,vis,inrecursion,graph);
+            }
+        }
+        for (int i=0; i<v; i++){
+            if (inrecursion[i] == false) ans.push_back(i);
+        }
+        return ans;
+    }
+};
