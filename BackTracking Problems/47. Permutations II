@@ -1,0 +1,27 @@
+class Solution {
+public:
+    void solve(int &n,vector<int>curr,map<int,int>mp,vector<vector<int>>&ans){
+        if (curr.size() == n){
+            ans.push_back(curr);
+            return;
+        }
+        for (auto &x : mp){
+            if (x.second > 0){
+                curr.push_back(x.first);
+                x.second--;
+                solve(n,curr,mp,ans);
+                x.second++;
+                curr.pop_back();
+            }
+        }
+    }
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+        vector<vector<int>>ans;
+        vector<int>curr;
+        map<int,int>mp;
+        for (int &x : nums) mp[x]++;
+        int n = nums.size();
+        solve(n,curr,mp,ans);
+        return ans;
+    }
+};
