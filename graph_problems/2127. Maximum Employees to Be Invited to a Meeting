@@ -1,0 +1,66 @@
+
+GRAPH IS REVERSED TO TRAVEL
+
+1---> FIRST CHECK IF THERE CYCYLE STARTS FROM THE CURR NODE;
+2---> IF  CYCLE LENGTH IS 2 FIND ITS LONGEST PATH FROM BOTH THE NODE USING BFS AND ADD THIS LENGTH INTO HAPPY_COUPLE_LENGTH VAR.
+3---> IF CYCLE LENGTH IS NOT 2 JUST UPDATE THE LONGEST_CYCLE_LENGTH VARIABLE;
+
+
+
+
+
+class Solution {
+public:
+    int BFS(int start,unordered_map<int,vector<int>>&adj,vector<bool>&vis){
+        queue<pair<int,int>>q;
+        int max_dist = 0;
+        q.push({start,0});
+        while(!q.empty()){
+            auto [curr_node,dist] = q.front(); q.pop();
+
+            for (auto &ngbr : adj[curr_node]){
+                if (!vis[ngbr]){
+                    vis[ngbr] = true;
+                    q.push({ngbr,dist+1});
+                    max_dist = max(max_dist,dist+1);
+                }
+            }
+        }
+        return max_dist;
+    }
+    int maximumInvitations(vector<int>& favorite) {
+        int n = favorite.size();
+        unordered_map<int,vector<int>>adj;
+        for (int i=0; i<n; i++){
+            adj[favorite[i]].push_back(i);
+        }
+        int longest_cycle_length = 0;
+        int happy_couple_length = 0;
+        vector<int>vis(n,false);
+        for (int i=0; i<n; i++){
+            if (!vis[i]){
+                unordered_map<int,int>mp;
+                int curr_node = i;
+                int curr_node_cnt = 0;
+                while(!vis[curr_node]){
+                    vis[curr_node] = 1;
+                    mp[curr_node] = curr_node_cnt;
+                    int next_node = favorite[curr_node];
+                    curr_node_cnt++;
+                    if (mp.count(next_node)){
+                        int cycle_length = curr_node_cnt - mp[next_node];
+                        longest_cycle_length = max(cycle_length,longest_cycle_length);
+                        if(cycle_length == 2){
+                            vector<bool>vis_node(n,false);
+                            vis_node[curr_node] = 1; vis_node[next_node] = 1;
+                            happy_couple_length += (2 + BFS(curr_node,adj,vis_node) + BFS(next_node,adj,vis_node));
+                        }
+                        break;
+                    }
+                    curr_node = next_node;
+                }
+            }
+        }
+        return max(happy_couple_length,longest_cycle_length);
+    }
+};
