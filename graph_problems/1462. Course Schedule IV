@@ -1,0 +1,83 @@
+-------------APPROACH1-----------------
+TIME COMP -----> O(Q) * O(V+E);
+SPACE COMP -----> O(V+E);
+
+
+
+class Solution {
+public:
+    bool BFS(int &src,int &target,int &n,unordered_map<int,vector<int>>&adj){
+        vector<int>vis(n,0);
+        vis[src] = 1;
+        queue<int>q; q.push(src);
+        while(!q.empty()){
+            int curr_node = q.front(); q.pop();
+            if (curr_node == target) return true;
+            for (int &ngbr : adj[curr_node]){
+                if (!vis[ngbr]){
+                    q.push(ngbr); vis[ngbr] = 1;
+                }
+            }
+        }
+        return false;
+    }
+    vector<bool> checkIfPrerequisite(int numCourses, vector<vector<int>>& prerequisites, vector<vector<int>>& queries) {
+        unordered_map<int,vector<int>>adj;
+        for (auto &x : prerequisites){
+            adj[x[0]].push_back(x[1]);
+        }
+        int q = queries.size();
+        vector<bool>ans(q,false);
+        for (int i=0; i<q; i++){
+            ans[i] = BFS(queries[i][0],queries[i][1],numCourses,adj);
+        }
+        return ans;
+    }
+};
+
+
+---------------APPROACH 2---------------(TOPOLOGICAL SORTING);
+TIME COMP ----> O(V+E)*(V);
+SPACE COMP ----> O(V+E);
+
+
+class Solution {
+public:
+    
+    vector<bool> checkIfPrerequisite(int numCourses, vector<vector<int>>& prerequisites, vector<vector<int>>& queries) {
+        unordered_map<int,vector<int>>adj;
+        vector<int>indegree(numCourses,0);
+        for (auto &x : prerequisites){
+            adj[x[0]].push_back(x[1]);
+            indegree[x[1]]++;
+        }
+        queue<int>q;
+        for (int i=0; i<numCourses; i++){
+            if (indegree[i] == 0) q.push(i);
+        }
+        int Q = queries.size();
+        unordered_map<int,unordered_set<int>>mp;
+        while(!q.empty()){
+            int curr_node = q.front(); q.pop();
+            for (int &ngbr : adj[curr_node]){
+                mp[ngbr].insert(curr_node);
+                for (int pre : mp[curr_node]){
+                    mp[ngbr].insert(pre);
+                }
+                indegree[ngbr]--;
+                if (indegree[ngbr] == 0){
+                    q.push(ngbr);
+                }
+            }
+        }
+        vector<bool>ans(Q,false);
+        for (int i=0; i<Q; i++){
+            int src = queries[i][0];
+            int dest = queries[i][1];
+            if (mp[dest].find(src) != mp[dest].end()){
+                ans[i] = true;
+            }
+        }
+        return ans;
+    }
+};
