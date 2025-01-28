@@ -1,0 +1,91 @@
+-------------APPROACH 01----------------
+TIME COMP ----> O(N*M) * O(N*M);
+SPACE COMP ----> O(N*M);
+
+
+
+class Solution {
+public:
+    int BFS(int &i,int &j,vector<vector<int>>& grid){
+        int n = grid.size(), m = grid[0].size();
+        vector<vector<int>>vis(n,vector<int>(m,0));
+        queue<pair<int,int>>q; q.push({i,j});
+        vis[i][j] = 1;
+        vector<vector<int>>dir = {{1,0},{0,1},{0,-1},{-1,0}};
+        int curr_fish = grid[i][j];
+        
+        while(!q.empty()){
+            int x = q.front().first;
+            int y = q.front().second; q.pop();
+            for (int d = 0; d<=3; d++){
+                int nx = x + dir[d][0];
+                int ny = y + dir[d][1];
+                if (nx<n && nx >= 0 && ny<m && ny>=0 && !vis[nx][ny] && grid[nx][ny] != 0){
+                    curr_fish += grid[nx][ny]; vis[nx][ny] = 1; q.push({nx,ny});
+                }
+            }
+        }
+        return curr_fish;
+    }
+    int findMaxFish(vector<vector<int>>& grid) {
+        int n = grid.size(), m = grid[0].size();
+        int max_fish = 0;
+        for (int i=0; i<n; i++){
+            for (int j=0; j<m; j++){
+                if (grid[i][j] != 0){
+                    int total_fish = BFS(i,j,grid);
+                    max_fish = max(max_fish,total_fish);
+                }
+            }
+        }
+        return max_fish;
+    }
+};
+
+
+------------------APPROACH 02------------------
+TIME COMP --------> O(N*M);
+SPACE COMP -------> O(N*M);
+
+
+class Solution {
+public:
+    int BFS(int &i,int &j,vector<vector<int>>& grid,vector<vector<int>>&vis){
+        int n = grid.size(), m = grid[0].size();
+        queue<pair<int,int>>q; q.push({i,j});
+        vis[i][j] = 1;
+        vector<vector<int>>dir = {{1,0},{0,1},{0,-1},{-1,0}};
+        int curr_fish = grid[i][j];
+        
+        while(!q.empty()){
+            int x = q.front().first;
+            int y = q.front().second; q.pop();
+            for (int d = 0; d<=3; d++){
+                int nx = x + dir[d][0];
+                int ny = y + dir[d][1];
+                if (nx<n && nx >= 0 && ny<m && ny>=0 && !vis[nx][ny] && grid[nx][ny] != 0){
+                    curr_fish += grid[nx][ny]; vis[nx][ny] = 1; q.push({nx,ny});
+                }
+            }
+        }
+        return curr_fish;
+    }
+    int findMaxFish(vector<vector<int>>& grid) {
+        int n = grid.size(), m = grid[0].size();
+        int max_fish = 0;
+        vector<vector<int>>vis(n,vector<int>(m,0));
+        for (int i=0; i<n; i++){
+            for (int j=0; j<m; j++){
+                if (grid[i][j] != 0 && !vis[i][j]){
+                    int total_fish = BFS(i,j,grid,vis);
+                    max_fish = max(max_fish,total_fish);
+                }
+            }
+        }
+        return max_fish;
+    }
+};
+
+
+
+---------- WE CAN ALSO SOLVE THIS PROBLEM USING DSU-----------------
