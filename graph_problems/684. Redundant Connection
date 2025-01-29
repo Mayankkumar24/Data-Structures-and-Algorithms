@@ -1,0 +1,50 @@
+----------------APPROACH 01-----------------
+TIME COMP -------> O(N*N);
+SPACE COMP -----> O(N) + O(N*K), WHERE K IS THE NUMBER OF TIMES BFS CALLED;
+
+
+
+
+
+class Solution {
+public:
+    bool BFS(int &src,int &dest,int &n,unordered_map<int,vector<int>>&adj){
+        vector<int>vis(n+1,0);
+        vis[src] = 1;
+        queue<int>q;
+        q.push(src);
+        while(!q.empty()){
+            int node = q.front(); q.pop();
+            if (node == dest) return true;
+            for (int &ngbr : adj[node]){
+                if (!vis[ngbr]){
+                    q.push(ngbr);
+                    vis[ngbr] = 1;
+                }
+            }
+        }
+        return false;
+    }
+
+    vector<int> findRedundantConnection(vector<vector<int>>& edges) {
+        int n = edges.size();
+        unordered_map<int,vector<int>>adj;
+        
+        for (vector<int>&edge : edges){
+            int u = edge[0];
+            int v = edge[1];
+            if ((adj.find(u) != adj.end()) && (adj.find(v) != adj.end())){
+                bool isRedundantConnection = BFS(u,v,n,adj);
+                if (isRedundantConnection == true){
+                    return edge;
+                }
+            }
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        
+        return {};
+    }
+};
+
+
