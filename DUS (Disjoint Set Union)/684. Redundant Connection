@@ -1,0 +1,56 @@
+TIME COMP ------> O(N*(ALPHA)) WHERE ALPHA IS SIZE OR PARENT OR RANK;
+SPACE COMP ----> O(N);
+
+
+
+class DSU{
+public:
+    vector<int>Rank;
+    vector<int>Parent;
+
+    DSU(int n){
+        Rank.resize(n+1,0);
+        Parent.resize(n+1,0);
+        for (int i=1; i<=n; i++){
+            Parent[i] = i;
+        }
+    }
+    int find(int x){
+        if (x == Parent[x]){
+            return x;
+        }
+        return Parent[x] = find(Parent[x]);
+    }
+    void Union(int x,int y){
+        int x_parent = find(x);
+        int y_parent = find(y);
+        if (x_parent == y_parent) return;
+        if (Rank[x_parent]>Rank[y_parent]){
+            Parent[y_parent] = x_parent;
+        }
+        else if (Rank[x_parent] < Rank[y_parent]){
+            Parent[x_parent] = y_parent;
+        }else{
+            Parent[y_parent] = x_parent;
+            Rank[x_parent]++;
+        }
+    }
+};
+
+class Solution {
+public:
+    vector<int> findRedundantConnection(vector<vector<int>>& edges) {
+        int n = edges.size();
+        DSU dsu(n);
+
+        for (vector<int>&edge : edges){
+            int u = edge[0];
+            int v = edge[1];
+            if (dsu.find(u) == dsu.find(v)){
+                return edge;
+            }
+            dsu.Union(u,v);
+        }
+        return {};
+    }
+};
