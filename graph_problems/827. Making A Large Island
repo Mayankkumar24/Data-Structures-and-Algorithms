@@ -1,0 +1,112 @@
+----------------BRUTE FORCE APROACH------------------
+TIME COMP----------> O((N*M)*(N*M);
+SPACE COMP ---------> O((N*M)*(N*M));
+
+
+class Solution {
+public:
+    int BFS(vector<vector<int>>& grid, int &i,int &j){
+        int n = grid.size(), m = grid[0].size();
+        queue<pair<int,int>>q;
+        vector<vector<int>>dir = {{1,0},{0,1},{0,-1},{-1,0}};
+        vector<vector<int>>vis(n,vector<int>(m,0));
+        vis[i][j] = 1;
+        int area = 1;
+        q.push({i,j});
+        while(!q.empty()){
+            int x = q.front().first;
+            int y = q.front().second; q.pop();
+            for (int ind = 0; ind<=3; ind++){
+                int new_x = dir[ind][0] + x;
+                int new_y = dir[ind][1] + y;
+                if (new_x<n && new_x>=0 && new_y<m && new_y>=0 && !vis[new_x][new_y] && grid[new_x][new_y] == 1){
+                    q.push({new_x,new_y});
+                    vis[new_x][new_y] = 1;
+                    area++;
+                }
+            }
+        }
+        return area;
+    }
+    int largestIsland(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+        int Largest_Area = 0;
+        int Cntz = 0;
+        for (int i=0; i<n; i++){
+            for (int j=0; j<m; j++){
+                if (grid[i][j] == 0){
+                    int Curr_Area = BFS(grid,i,j);
+                    Largest_Area = max(Curr_Area,Largest_Area);
+                    Cntz++;
+                }
+            }
+        }
+        if (Cntz == 0) return m*n;
+        return Largest_Area;
+    }
+};
+
+
+
+------------------------OPTIMAL APPROACH-------------------------------
+TIME COMP-------------------> O(n*m);
+SPACE COMP------------------> O(N*M);
+
+
+class Solution {
+public:
+    int  n,m;
+    vector<vector<int>>dir = {{1,0},{0,1},{0,-1},{-1,0}};
+    int DFS(int i, int j,vector<vector<int>>& grid,vector<vector<int>>&vis,int &iD){
+        if (i>=n || j>=m || i<0 || j<0 || vis[i][j] || grid[i][j] != 1){
+            return 0;
+        }
+        grid[i][j] = iD;
+        vis[i][j] = 1;
+        int size = 1;
+        for (int idx = 0; idx <=3; idx++){
+            int new_i = i + dir[idx][0];
+            int new_j = j + dir[idx][1];
+            size += DFS(new_i,new_j,grid,vis,iD);
+        }
+        return size;
+    }
+    int largestIsland(vector<vector<int>>& grid) {
+        unordered_map<int,int>mp;
+        n = grid.size();
+        m = grid[0].size();
+        vector<vector<int>>vis(n,vector<int>(m,0));
+        int islandId = 2, maxArea = 0;
+        for (int i=0; i<n; i++){
+            for (int j=0; j<m; j++){
+                if (grid[i][j] == 1 && !vis[i][j]){
+                    int size = DFS(i,j,grid,vis,islandId);
+                    maxArea = max(maxArea,size);
+                    mp[islandId] = size;
+                    islandId++;
+                }
+            }
+        }
+        for (int i=0; i<n; i++){
+            for (int j=0; j<m; j++){
+                if (grid[i][j] == 0){
+                    unordered_set<int>uniqueIds;
+                    for (int ind = 0; ind<=3; ind++){
+                        int ni = i + dir[ind][0];
+                        int nj = j + dir[ind][1];
+                        if (ni<n && ni>=0 && nj<m && nj>=0 && grid[ni][nj] != 0){
+                            uniqueIds.insert(grid[ni][nj]);
+                        }
+                    }
+                    int overallsize = 1;
+                    for (auto &x: uniqueIds){
+                        overallsize += mp[x];
+                    }
+                    maxArea = max(maxArea,overallsize);
+                }
+            }
+        }
+        return maxArea;
+    }
+};
