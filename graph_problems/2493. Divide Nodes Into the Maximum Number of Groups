@@ -1,0 +1,81 @@
+TIME COMP -----> O(V*(V+E));
+SPACE COMP ----> O(V+E);
+
+
+
+class Solution {
+public:
+    bool isBipertite(unordered_map<int,vector<int>>&adj,int &curr_node,vector<int>&colors,int curr_col){
+        colors[curr_node] = curr_col;
+        for (int &ngbr : adj[curr_node]){
+            if (colors[ngbr] == colors[curr_node]){
+                return false;
+            }
+            if (colors[ngbr] == -1){
+                if (isBipertite(adj,ngbr,colors,1-curr_col) == false) return false;
+            }
+        }
+        return true;
+        
+    }
+    int BFS(unordered_map<int,vector<int>>&adj,int curr_node,int &n){
+        vector<int>vis(n,0);
+        vis[curr_node] = 1;
+        queue<int>q; q.push(curr_node);
+        int level = 1;
+        while(!q.empty()){
+            int size = q.size();
+            while(size--){
+                int next_node = q.front(); q.pop();
+                for (int &ngbr : adj[next_node]){
+                    if (!vis[ngbr]){
+                        vis[ngbr] = 1;
+                        q.push(ngbr);
+                    }
+                }
+            }
+            level++;
+        }
+        return level-1;
+    }
+    int getMaxFromEachComp(unordered_map<int,vector<int>>&adj,int curr_node,vector<int>&vis,vector<int>&levels){
+        int ans = levels[curr_node];
+        vis[curr_node] = 1;
+        for (int &ngbr : adj[curr_node]){
+            if (!vis[ngbr]){
+                ans =  max(ans,getMaxFromEachComp(adj,ngbr,vis,levels));
+            }
+        }
+        return ans;
+    }
+    int magnificentSets(int n, vector<vector<int>>& edges) {
+        unordered_map<int,vector<int>>adj;
+        for (auto &x : edges){
+            int u = x[0]-1;
+            int v = x[1]-1;
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        vector<int>colors(n,-1);
+        for (int node =0; node<n; node++){
+            if (colors[node] == -1){
+                if (isBipertite(adj,node,colors,1) == false){
+                    return -1;
+                }
+            }
+        }
+        vector<int>levels(n,0);
+        for (int node=0; node<n; node++){
+            levels[node] = BFS(adj,node,n);
+        }
+        int MaxGrpComp = 0;
+        vector<int>vis(n,0);
+
+        for (int node = 0; node<n; node++){
+            if (!vis[node]){
+                MaxGrpComp += getMaxFromEachComp(adj,node,vis,levels);
+            }
+        }
+        return MaxGrpComp;
+    }
+};
