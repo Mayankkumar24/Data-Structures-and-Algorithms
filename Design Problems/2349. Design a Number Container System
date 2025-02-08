@@ -1,0 +1,30 @@
+TIME COMP-----> O(LOG(N));
+SPACE COMP----> O(N);
+
+class NumberContainers {
+public:
+    unordered_map<int,set<int>>num_to_ind;
+    unordered_map<int,int>ind_to_num;
+    NumberContainers() {
+        
+    }
+    
+    void change(int index, int number) {
+        if (ind_to_num.find(index) != ind_to_num.end()){
+            int prv_ele = ind_to_num[index];
+            num_to_ind[prv_ele].erase(index);
+            if (num_to_ind[prv_ele].size() == 0){
+                num_to_ind.erase(prv_ele);
+            }
+        }
+        ind_to_num[index] = number;
+        num_to_ind[number].insert(index);
+    }
+    
+    int find(int number) {
+        if (num_to_ind.find(number) != num_to_ind.end()){
+            return *num_to_ind[number].begin();
+        }
+        return -1;
+    }
+};
