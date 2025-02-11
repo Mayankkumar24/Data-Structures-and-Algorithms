@@ -1,0 +1,53 @@
+TIME COMP---> O(N + M);
+SPACE COMP---> O(N+ M);
+
+class Solution {
+public:
+    void Build_LPS(vector<int>&lps,string &s){
+        int m= s.size();
+        int j = 1, len = 0;
+        while(j<m){
+            if (s[j] == s[len]){
+                len++; lps[j] = len; j++;
+            }else{
+                if (len > 0){
+                    len = lps[len-1];
+                }else{
+                    lps[j] = 0; j++;
+                }
+            }
+        }
+    }
+    string removeOccurrences(string s, string part) {
+        int n = s.size();
+        int m = part.size();
+        vector<int>lps(m,0);
+        Build_LPS(lps,part);
+        stack<pair<int,char>>st;
+        st.push({0,' '});
+        for (char &ch : s){
+            int j = st.top().first;
+            while((j && (ch != part[j]))){
+                j = lps[j-1];
+            }
+            if (ch == part[j]){
+                j++;
+            }
+            if (j >= m){
+                for (int i=0; i<m-1; i++){
+                    st.pop();
+                }
+            }else{
+                st.push({j,ch});
+            }
+        }
+        string ans = "";
+        while(!st.empty()){
+            char ch = st.top().second;
+            if (ch != ' ') ans += ch;
+            st.pop();
+        }
+        reverse(ans.begin(),ans.end());
+        return ans;
+    }
+};
