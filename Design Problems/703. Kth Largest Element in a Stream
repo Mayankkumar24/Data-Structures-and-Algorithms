@@ -1,0 +1,89 @@
+-----------------BRUTE FORCE APPROACH----------------
+TIME COMP---------> O(N*LOG(N)) * NUMBER OF CALLS;
+SPACE COMP--------> O(N);
+
+class KthLargest {
+public:
+    int k;
+    vector<int>nums;
+    KthLargest(int k, vector<int>& nums) {
+        this->k = k;
+        this->nums = nums;
+    }
+    
+    int add(int val) {
+        nums.push_back(val);
+        sort(nums.rbegin(),nums.rend());
+        return nums[k-1];
+    }
+};
+
+---------------------BETTER APPROACH---------------------
+TIME COMP------> O(N*LOG(N)) FOR CONSTRUCT AND INSERTS NODE IN BST + O(2*LOG(N)) FOR INSERTION AND SEARCH OPERATION;
+SPACE COMP----> O(N);
+
+class KthLargest {
+public:
+    int k;
+    TreeNode* root;
+    TreeNode* Insert(TreeNode* node,int x){
+        if (!node) return new TreeNode(x);
+        if (x < node->val) node->left = Insert(node->left,x);
+        else node->right = Insert(node->right,x);
+        return node;
+    }
+    int Search(TreeNode* node,int &k){
+        if (!node) return 0;
+        int r = Search(node->right,k);
+        k--;
+        if (k == 0){
+            return node->val;
+        }
+        int l = Search(node->left,k);
+        return l ? l : r;
+    }
+    KthLargest(int k, vector<int>& nums) {
+        this->k = k;
+        this->root = nullptr;
+        for (auto &x : nums){
+            root = Insert(root,x);
+        }
+    }
+    
+    int add(int val) {
+        root = Insert(root,val);
+        int y = k;
+        return Search(root,y);
+    }
+};
+
+------------------------OPTIMAL APPROACH------------------
+TIME COMP-------> o(k*x) + LOG(X) WHERE X IS THE AVG SIZE OF MINHEAP;
+SPACE COMP------> O(K);
+
+class KthLargest {
+private:
+    int k;
+    priority_queue<int,vector<int>,greater<int>>pq;
+public:
+    KthLargest(int k, vector<int>& nums) {
+        this->k = k;
+        for (auto x : nums){
+            if (pq.size() < k){
+                pq.push(x);
+            }else if (pq.top() < x){
+                pq.push(x);
+                if (pq.size() > k) pq.pop();
+            }
+        }
+    }
+    
+    int add(int val) {
+        if (pq.size() < k) pq.push(val);
+        else if (pq.top() < val){
+            pq.push(val);
+            pq.pop();
+        }
+        return pq.top();
+    }
+};
