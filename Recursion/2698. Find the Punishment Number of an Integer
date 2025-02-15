@@ -1,0 +1,24 @@
+TIME COMP---> O(N* 2^(LOG(N)));
+SPACE COMP----> O(2^LOG(N));
+
+class Solution {
+public:
+    bool isPossible(int &str,string &s,int i,int rem,int sum){
+        if (i >= s.size()){
+            return rem+sum == str;
+        }
+        rem= (10 * rem) + (s[i]-'0');
+        return (isPossible(str,s,i+1,0,sum+rem) || isPossible(str,s,i+1,rem,sum));
+    }
+    int punishmentNumber(int n) {
+        int ans = 0;
+        for(int i=1; i<=n ;i++){
+            int sqr = i*i;
+            string s= to_string(sqr);
+            if (isPossible(i,s,0,0,0)){
+                ans += sqr;
+            }
+        }
+        return ans;
+    }
+};
