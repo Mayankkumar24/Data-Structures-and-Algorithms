@@ -1,0 +1,80 @@
+class Solution {
+public:
+    bool solve(int i,char w,int last,string &ans,unordered_set<int>&s,string &pat){
+        if (i > pat.size()) return true;
+        if (last == 0){
+            if (pat[i] == 'I'){
+                ans += to_string(1); last = 1; w = 'B';
+            }else{
+                ans += to_string(2); last = 2; w = 'S';
+            }
+            s.insert(last);
+            if (solve(i+1,w,last,ans,s,pat)) return true;
+            s.erase(last);
+            ans.pop_back();
+            for (int k=1; k<=9; k++){
+                if (s.find(k) == s.end()){
+                    s.insert(k);
+                    char temp;
+                    ans += to_string(k);
+                    if (pat[i] == 'I'){
+                        temp = 'B';
+                    }else{
+                        temp = 'S';
+                    }
+                    w = temp;
+                    if (solve(i+1,w,k,ans,s,pat)) return true;
+                    s.erase(k);
+                    ans.pop_back();
+                }
+            }
+            return false;
+        }else{
+            if (w == 'S'){
+                for (int k=1; k<last; k++){
+                    if (s.find(k) == s.end()){
+                        s.insert(k);
+                        char temp;
+                        ans += to_string(k);
+                        if (pat[i] == 'I'){
+                            temp = 'B';
+                        }else{
+                            temp = 'S';
+                        }
+                        w = temp;
+                        if (solve(i+1,w,k,ans,s,pat)) return true;
+                        s.erase(k);
+                        ans.pop_back();
+                    }
+                }
+                return false;
+            }else{
+                for (int k=last+1; k<=9; k++){
+                    if (s.find(k) == s.end()){
+                        s.insert(k);
+                        ans += to_string(k);
+                        char temp;
+                        if (pat[i] == 'I'){
+                            temp = 'B';
+                        }else{
+                            temp = 'S';
+                        }
+                        w = temp;
+                        if (solve(i+1,w,k,ans,s,pat)) return true;
+                        s.erase(k);
+                        ans.pop_back();
+                    }
+                }
+                return false;
+            }
+        }
+    }
+    string smallestNumber(string pattern) {
+        string ans = "";
+        int last   = 0;
+        char w     = 'a';
+        unordered_set<int>s;
+        solve(0,w,last,ans,s,pattern);
+        return ans;
+    }
+};
