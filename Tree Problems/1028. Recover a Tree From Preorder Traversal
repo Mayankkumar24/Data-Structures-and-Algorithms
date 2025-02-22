@@ -1,0 +1,27 @@
+TIME COMP----> O(N);
+A.SPACE COMP--> O(N);
+
+
+class Solution {
+public:
+    TreeNode* MakeTree(int &i,int depth,string &s){
+        if (i >= s.size()) return NULL;
+        int j = i;
+        while(j<s.size() && s[j] == '-') j++;
+        int dash = j-i;
+        if (dash != depth) return NULL;
+        i+=dash;
+        int num = 0;
+        while(i<s.size() && isdigit(s[i])){
+            num = (num * 10) + (s[i]-'0'); i++;
+        }
+        TreeNode* root = new TreeNode(num);
+        root->left = MakeTree(i,depth+1,s);
+        root->right = MakeTree(i,depth+1,s);
+        return root;
+    }
+    TreeNode* recoverFromPreorder(string traversal) {
+        int i = 0;
+        return MakeTree(i,0,traversal);
+    }
+};
