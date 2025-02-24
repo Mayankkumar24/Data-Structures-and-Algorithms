@@ -1,0 +1,52 @@
+class Solution {
+public:
+    void DFS1(int node, int par,int t,vector<int>&parent,vector<int>&time,unordered_map<int,vector<int>>&adj){
+        time[node] = t;
+        parent[node] = par;
+        for (int &child : adj[node]){
+            if (par != child){
+                DFS1(child,node,t+1,parent,time,adj);
+            }
+        }
+    }
+    void DFS2(int node,int par,int curr,int &profit,vector<int>&parent,vector<int>&amount,unordered_map<int,vector<int>>&adj){
+        curr += amount[node];
+        bool isLeaf = true;
+        for (int &child : adj[node]){
+            if (par != child){
+                isLeaf = false;
+                DFS2(child,node,curr,profit,parent,amount,adj);
+            }
+        }
+        if (isLeaf){
+            profit = max(profit,curr);
+        }
+    }
+    int mostProfitablePath(vector<vector<int>>& edges, int bob, vector<int>& amount) {
+        int n = amount.size();
+        unordered_map<int,vector<int>>adj;
+        for (auto &edge : edges){
+            int u = edge[0];
+            int v = edge[1];
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        vector<int>parent(n,-1);
+        vector<int>time(n,INT_MAX);
+        parent[0] = 0;
+        int t = 0;
+        DFS1(0,0,t,parent,time,adj);
+        t = 0;
+        int node = bob;
+        while(node != 0){
+            if (time[node] > t) amount[node] = 0;
+            else if (time[node] == t) amount[node] /= 2;
+            node = parent[node];
+            t++;
+        }
+        int curr = 0;
+        int profit = INT_MIN;
+        DFS2(0,0,curr,profit,parent,amount,adj);
+        return profit;
+    }
+};
