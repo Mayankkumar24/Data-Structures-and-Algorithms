@@ -1,0 +1,19 @@
+class Solution {
+public:
+    int solve(int i, int j,vector<int>&nums,vector<vector<int>>&dp){
+        if (j == nums.size()) return nums[i];
+        if (j == nums.size()-1) return max(nums[i],nums[j]);
+        if (dp[i][j] != -1) return dp[i][j];
+        int first = max(nums[j],nums[j+1]) + solve(i,j+2,nums,dp);
+        int second = max(nums[i],nums[j+1]) + solve(j,j+2,nums,dp);
+        int third  = max(nums[i],nums[j]) + solve(j+1,j+2,nums,dp);
+        int res = min(first,min(second,third));
+        return dp[i][j] = res;
+
+    }
+    int minCost(vector<int>& nums) {
+        int n = nums.size();
+        vector<vector<int>>dp(n+1,vector<int>(n+1,-1));
+        return solve(0,1,nums,dp);
+    }
+};
