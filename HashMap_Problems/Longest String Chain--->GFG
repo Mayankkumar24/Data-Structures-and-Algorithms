@@ -1,0 +1,24 @@
+class Solution {
+  public:
+    static bool comp(string &a,string &b){
+        return (a.size() < b.size());
+    }
+    int longestStringChain(vector<string>& words) {
+        // Code here
+        sort(words.begin(),words.end(),comp);
+        int n = words.size(), maxLength = 0;
+        unordered_map<string,int>mp;
+        for (auto &word : words){
+            int length = 1;
+            for(int i=0; i<word.size(); i++){
+                string pred = word.substr(0,i) + word.substr(i+1);
+                if (mp.find(pred) != mp.end()){
+                    length = max(length,mp[pred]+1);
+                }
+            }
+            mp[word] = length;
+            maxLength = max(maxLength,length);
+        }
+        return maxLength;
+    }
+};
