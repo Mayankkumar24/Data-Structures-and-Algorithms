@@ -1,0 +1,29 @@
+class Solution {
+public:
+    vector<int> closestPrimes(int left, int right) {
+        vector<int>ans(2,-1);
+        int diff = INT_MAX;
+        vector<bool>isPrime(right+2,true);
+        isPrime[0] = false; isPrime[1] = false;
+        for  (int i=2; i*i <= right; i++){
+            if (isPrime[i]){
+                for(int j=i*i; j<=right; j+=i){
+                    isPrime[j] = false;
+                }
+            }
+        }
+        vector<int>Primes;
+        for (int i=left; i<=right; i++){
+            if (isPrime[i]) Primes.push_back(i);
+        }
+        for (int i=1; i<Primes.size(); i++){
+            int curr_diff = Primes[i] - Primes[i-1];
+            if (curr_diff < diff){
+                diff = curr_diff;
+                ans[0] = Primes[i-1];
+                ans[1] = Primes[i];
+            }
+        }
+        return ans;
+    }
+};
