@@ -1,0 +1,23 @@
+------------COUNT NO OF PALINDROMES SUBSTRING--------------
+
+class Solution {
+  public:
+    bool isPalindrome(int i, int j,string &s,vector<vector<int>>&dp){
+        if (i >= j) return 1;
+        if (dp[i][j] != -1) return dp[i][j];
+        int ans = 0;
+        if (s[i] == s[j]) ans = isPalindrome(i+1,j-1,s,dp);
+        return dp[i][j] = ans;
+    }
+    int countPS(string &s) {
+        int n = s.size();
+        int ans = 0;
+        vector<vector<int>>dp(n+1,vector<int>(n+1,-1));
+        for (int i=0; i<n; i++){
+            for (int j=i+1; j<n; j++){
+                if ((j-i+1 >= 2) && (isPalindrome(i,j,s,dp))) ans++;
+            }
+        }
+        return ans;
+    }
+};
