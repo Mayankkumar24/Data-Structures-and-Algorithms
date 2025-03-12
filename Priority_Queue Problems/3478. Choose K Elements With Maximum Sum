@@ -1,0 +1,33 @@
+class Solution {
+public:
+    typedef pair<int,int>p;
+    vector<long long> findMaxSum(vector<int>& nums1, vector<int>& nums2, int k) {
+        int n = nums1.size(); long long last_total = 0, curr_total = 0, last = -1;
+
+        vector<long long>ans(n,0);
+        priority_queue<p,vector<p>,greater<p>>minHeap1;
+        priority_queue<int,vector<int>,greater<int>>minHeap2;
+        for (int i=0; i<n; i++) minHeap1.push({nums1[i],i});
+        
+        while(!minHeap1.empty()){
+            int val = minHeap1.top().first;
+            int idx = minHeap1.top().second;
+            minHeap1.pop();
+            if (last == val){
+                ans[idx] = last_total;
+                curr_total += nums2[idx];
+                minHeap2.push(nums2[idx]);
+            }else{
+                last = val;
+                while(minHeap2.size() > k){
+                    curr_total -= minHeap2.top(); minHeap2.pop();
+                }
+                ans[idx] = curr_total;
+                last_total = curr_total;
+                curr_total += nums2[idx];
+                minHeap2.push(nums2[idx]);
+            }
+        }
+        return ans;
+    }
+};
