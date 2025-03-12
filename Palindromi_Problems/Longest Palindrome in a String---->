@@ -1,0 +1,67 @@
+---------------APPROACH 01--------------------
+
+TIME COMP----> O(N^2);
+SPACE COMP----> O(N^2) + O(N)
+
+class Solution {
+  public:
+    bool isPalindrome(int i, int j,string &s,vector<vector<int>>&dp){
+        if (i >= j) return 1;
+        if (dp[i][j] != -1) return dp[i][j];
+        if (s[i] == s[j]) return dp[i][j] = isPalindrome(i+1,j-1,s,dp);
+        return dp[i][j] = 0;
+    }
+    string longestPalindrome(string &s) {
+        int n = s.size();
+        vector<vector<int>>dp(n,vector<int>(n,-1));
+        int st = -1,maxLen = 0;
+        for (int i=0; i<n; i++){
+            for (int j=i; j<n; j++){
+                if (isPalindrome(i,j,s,dp) && j-i+1 > maxLen){
+                    maxLen = j-i+1;
+                    st = i;
+                }
+            }
+        }
+        return s.substr(st,maxLen);
+    }
+};
+
+
+---------------APPROACH 02------------------
+
+TIME COMP----> O(N^2);
+SPACE COMP---> O(1);
+
+class Solution {
+  public:
+    string longestPalindrome(string &s) {
+        int n = s.size(), start = 0, end = 0, maxLen = 0;
+        for (int i=0; i<n; i++){
+            int l = i, r = i;
+            while((l>=0) && (r<n)){
+                if (s[l] != s[r]) break;
+                l--; r++;
+            }
+            int len = r-l-1;
+            if (len > maxLen){
+                maxLen = len;
+                start = l+1; end = r-1;
+            }
+        }
+        
+        for (int i=0; i<n; i++){
+            int l = i, r = i+1;
+            while((l>=0) && (r<n)){
+                if (s[l] != s[r]) break;
+                l--; r++;
+            }
+            int len = r-l-1;
+            if (len > maxLen){
+                maxLen = len;
+                start = l+1; end = r-1;
+            }
+        }
+        return s.substr(start,maxLen);
+    }
+};
