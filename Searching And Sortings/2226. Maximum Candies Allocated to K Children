@@ -1,0 +1,28 @@
+class Solution {
+public:
+    bool isPossible(int mid,long long k,vector<int>&candies){
+        int n = candies.size();
+        for (int i=0; i<n; i++){
+            if (k == 0) return true;
+            else if (candies[i] == mid) k--;
+            else if (candies[i] < mid) continue;
+            else{
+                k -= (candies[i]/mid);
+            }
+        }
+        return k <= 0;
+    }
+    int maximumCandies(vector<int>& candies, long long k) {
+        int low = 1;
+        int high = *max_element(candies.begin(),candies.end());
+        int ans = 0;
+        while(low <= high){
+            int mid = (low + high)/2;
+            if (isPossible(mid,k,candies)){
+                ans = mid;
+                low = mid+1;
+            }else high =mid-1;
+        }
+        return ans;
+    }
+};
