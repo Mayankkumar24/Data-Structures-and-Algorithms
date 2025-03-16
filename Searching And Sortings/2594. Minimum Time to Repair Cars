@@ -1,0 +1,26 @@
+class Solution {
+public:
+    typedef long long ll;
+    bool CanRepairs(ll &time,int &cars,vector<int>&ranks){
+        int n = ranks.size();
+        int total_cars = 0;
+        for (int i=0; i<n; i++){
+            int CarRepairByThisMechanic = sqrt(time/ranks[i]);
+            total_cars += CarRepairByThisMechanic;
+            if (total_cars >= cars) return true;
+        }
+        return (total_cars >= cars);
+    }
+    long long repairCars(vector<int>& ranks, int cars) {
+        ll low = 0, high = (ll) *min_element(ranks.begin(),ranks.end()) * cars * cars;
+        ll min_time = LLONG_MAX;
+        while(low <= high){
+            ll mid = (low + high)/2;
+            if (CanRepairs(mid,cars,ranks)){
+                min_time = min(min_time,mid);
+                high = mid-1;
+            }else low = mid+1;
+        }
+        return min_time;
+    }
+};
