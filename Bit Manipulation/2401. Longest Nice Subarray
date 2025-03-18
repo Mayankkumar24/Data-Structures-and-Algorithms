@@ -1,0 +1,44 @@
+----------------BRUTE FORCE APPROACH------------------------
+TIME COMP-----> O(N^2);
+SPACE COMP----> O(1);
+
+class Solution {
+public:
+    int longestNiceSubarray(vector<int>& nums) {
+        int n = nums.size(), ans = 1;
+
+        for (int i=0; i<n; i++){
+            int mask = 0;
+            for (int j=i; j<n; j++){
+                if ((mask & (nums[j])) != 0){
+                    break;
+                }
+                mask |= nums[j];
+                ans = max(ans,j-i+1);
+            }
+        }
+        return ans;
+    }
+};
+
+
+------------------OPTIMAL APPROACH----------------------
+TIME COMP-----> O(N);
+SPACE COMP-----> O(1);
+
+class Solution {
+public:
+    int longestNiceSubarray(vector<int>& nums) {
+        int n = nums.size(), ans = 1;
+        int j = 0;
+        int mask = 0;
+        for (int i=0; i<n; i++){
+            while(j<i && (mask & (nums[i])) != 0){
+                mask ^= nums[j]; j++;
+            }
+            mask |= nums[i];
+            ans = max(ans,i-j+1);
+        }
+        return ans;
+    }
+};
