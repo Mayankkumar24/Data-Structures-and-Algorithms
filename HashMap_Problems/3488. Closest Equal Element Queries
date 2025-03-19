@@ -1,0 +1,38 @@
+class Solution {
+public:
+    vector<int> solveQueries(vector<int>& nums, vector<int>& queries) {
+        int n = nums.size();
+        vector<int>ans(n,INT_MAX);
+        unordered_map<int,int>left,right;
+        
+        for (int i=0; i<n; i++){
+            if (left.find(nums[i]) != left.end()){
+                ans[i] = min(ans[i],i-left[nums[i]]);
+            }
+            left[nums[i]] = i;
+        }
+
+        for (int i=n-1; i>=0; i--){
+            if (right.find(nums[i]) != right.end()){
+                ans[i] = min(ans[i],right[nums[i]]-i);
+            }
+            right[nums[i]] = i;
+        }
+
+        for (int i=0; i<n; i++){
+            if ((ans[i] != INT_MAX) && (i != left[nums[i]])){
+                ans[i] = min(ans[i],i + (n-left[nums[i]]));
+            }
+            if ((ans[i] != INT_MAX) && (i != right[nums[i]])){
+                ans[i] = min(ans[i],right[nums[i]] + (n-i));
+            }
+            if (ans[i] == INT_MAX) ans[i] = -1;
+        }
+        vector<int>res;
+        for (int &x : queries){
+            res.push_back(ans[x]);
+        }
+        return res;
+
+    }
+};
