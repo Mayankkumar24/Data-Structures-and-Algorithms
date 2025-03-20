@@ -1,0 +1,30 @@
+class Spreadsheet {
+private:
+    vector<vector<int>>mat;
+public:
+    Spreadsheet(int rows) {
+        mat = vector<vector<int>>(rows+1,vector<int>(26,0));
+    }
+    
+    void setCell(string cell, int value) {
+        int col = cell[0] - 'A';
+        int row = stoi(cell.substr(1));
+        mat[row][col] = value;
+    }
+    
+    void resetCell(string cell) {
+        setCell(cell,0);
+    }
+    int Get_Value(string cell){
+        if (isdigit(cell[0])) return stoi(cell);
+        int col = cell[0] - 'A';
+        int row = stoi(cell.substr(1));
+        return mat[row][col];
+    }
+    int getValue(string formula) {
+        formula = formula.substr(1);
+        int plus_idx = formula.find('+');
+        return Get_Value(formula.substr(0,plus_idx)) + Get_Value(formula.substr(plus_idx+1));
+    }
+};
+
