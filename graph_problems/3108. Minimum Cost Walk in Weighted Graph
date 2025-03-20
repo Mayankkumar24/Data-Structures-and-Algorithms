@@ -1,0 +1,92 @@
+----------------Dijkstra (NOT OPTIMAL)--------------
+TIME COMP----> O(N*(N*LOG(N)));
+SPACE COMP---> O(N);
+
+class Solution {
+public:
+    typedef pair<int,int>p;
+    int Find_Min_Cost(int node,int &target,int &n,unordered_map<int,vector<pair<int,int>>>&adj){
+        vector<int>dist(n,INT_MAX);
+        priority_queue<p,vector<p>,greater<p>>pq;
+        pq.push({INT_MAX,node});
+        //dist[node] = 0;
+        int ans = INT_MAX;
+        while(!pq.empty()){
+            int curr_node = pq.top().second;
+            int curr_cost = pq.top().first; pq.pop();
+            if (curr_node == target){
+                ans = min(ans,curr_cost);
+            }
+            for (auto &x : adj[curr_node]){
+                int next_node = x.first;
+                int next_cost = x.second;
+                int And;
+                And  = (curr_cost == INT_MAX ? next_cost : (next_cost & curr_cost));
+                if (dist[next_node] > And){
+                    dist[next_node] = And;
+                    pq.push({And,next_node});
+                }
+            }
+        }
+        return (ans == INT_MAX ? -1 : ans);
+    }
+    vector<int> minimumCost(int n, vector<vector<int>>& edges, vector<vector<int>>& query) {
+        unordered_map<int,vector<pair<int,int>>>adj;
+        for (auto &x : edges){
+            int u = x[0], v = x[1], w = x[2];
+            adj[u].push_back({v,w});
+            adj[v].push_back({u,w});
+        }
+        vector<int>ans;
+        for(auto &x : query){
+            int from = x[0];
+            int to   = x[1];
+            ans.push_back(Find_Min_Cost(from,to,n,adj));
+        }
+        return ans;
+    }
+};
+
+
+------------------ DSU APPROACH (OPTIMAL)--------------------
+TIME COMP------> O(n + E + Q);
+SPACE COMP-----> O(N);
+
+class Solution {
+public:
+    vector<int>parent;
+    int Find(int x){
+        if (parent[x] == x) return x;
+        return parent[x] = Find(parent[x]);
+    }
+    void Union(int x, int y){
+        parent[y] = x;
+    }
+    vector<int> minimumCost(int n, vector<vector<int>>& edges, vector<vector<int>>& query) {
+        parent.resize(n);
+        vector<int>cost(n,-1);
+        for (int i=0; i<n; i++) parent[i] = i;
+        for (auto &x : edges){
+            int u = x[0], v = x[1], w = x[2];
+            int parent_u = Find(u);
+            int parent_v = Find(v);
+            if (parent_u != parent_v){
+                Union(parent_u,parent_v);
+                cost[parent_u] &= cost[parent_v];
+            }
+            cost[parent_u] &= w;
+        }
+        vector<int>ans;
+        for (auto &x : query){
+            int s = x[0], t = x[1];
+            if (s == t) ans.push_back(0);
+            else{
+                int parent_S = Find(s);
+                int parent_T = Find(t);
+                if (parent_S != parent_T) ans.push_back(-1);
+                else ans.push_back(cost[parent_S]);
+            }
+        }
+        return ans;
+    }
+};
