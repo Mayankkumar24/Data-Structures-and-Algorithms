@@ -1,0 +1,36 @@
+--FOR A GRAPH TO COMPLETE IT SHOULD FOLLOW THIS CONDITION---
+1--> V*(V-1) = E;
+2--> Indegree of each node has to be n-1.
+
+class Solution {
+public:
+    void DFS(int node,vector<int>&vis,unordered_map<int,vector<int>>&adj,int &e,int &v){
+        vis[node] = 1;
+        v++;
+        e += adj[node].size();
+        for (int &next_node : adj[node]){
+            if (!vis[next_node]){
+                DFS(next_node,vis,adj,e,v);
+            }
+        }
+    }
+    int countCompleteComponents(int n, vector<vector<int>>& edges) {
+        unordered_map<int,vector<int>>adj;
+        for (auto &x : edges){
+            int u = x[0];
+            int v = x[1];
+            adj[u].push_back(v); adj[v].push_back(u);
+        }
+        vector<int>vis(n,0);
+        
+        int ans = 0;
+        for (int i=0; i<n; i++){
+            if (!vis[i]){
+                int v = 0, e = 0;
+                DFS(i,vis,adj,e,v);
+                if (v*(v-1) == e) ans++;
+            }
+        }
+        return ans;
+    }
+};
