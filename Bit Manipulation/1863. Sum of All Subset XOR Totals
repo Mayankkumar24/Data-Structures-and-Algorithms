@@ -1,0 +1,46 @@
+---------BRUTE FROCE APPRAOCH-----------
+TIME COMP---> O(2^N);
+SPACE COMP---> O(2^N);
+A.SPACE COMP---> O(N);
+
+class Solution {
+public:
+    void GenerateSubsets(int i,vector<int>curr,vector<vector<int>>&allsets,vector<int>&nums){
+        if (i >= nums.size()) {
+            allsets.push_back(curr);
+            return;
+        }
+        curr.push_back(nums[i]);
+        GenerateSubsets(i+1,curr,allsets,nums);
+        curr.pop_back();
+        GenerateSubsets(i+1,curr,allsets,nums);
+    }
+    int subsetXORSum(vector<int>& nums) {
+        int TotalXor = 0;
+        vector<vector<int>>allsets;
+        vector<int>curr;
+        GenerateSubsets(0,curr,allsets,nums);
+        for (auto &vec : allsets){
+            int currXor = 0;
+            for (int &x : vec){
+                currXor ^= x;
+            }
+            TotalXor += currXor;
+        }
+        return TotalXor;
+    }
+};
+
+----------OPTIMAL APPROACH---------
+TIME COMP----> O(N);
+SPACE COMP---> O(1);
+
+class Solution {
+public:
+    int subsetXORSum(vector<int>& nums) {
+        int ans = 0;
+        int n = nums.size();
+        for (int &x : nums) ans |= x;
+        return (ans << (n-1));
+    }
+};
