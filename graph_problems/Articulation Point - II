@@ -1,0 +1,46 @@
+class Solution {
+  public:
+    int timer = 0;
+    void DFS(int node,int parent,vector<int>&vis,vector<int>&low,vector<int>&tin,vector<int>&mark,unordered_map<int,vector<int>>&adj){
+        vis[node] = 1;
+        low[node] = tin[node] = timer++;
+        int child = 0;
+        for (int &next_node : adj[node]){
+            if (next_node == parent) continue;
+            if (!vis[next_node]){
+                DFS(next_node,node,vis,low,tin,mark,adj);
+                low[node] = min(low[node],low[next_node]);
+                if (low[next_node] >= tin[node] && parent != -1){
+                    mark[node] = 1;
+                }
+                child++;
+            }else{
+                low[node] = min(low[node],tin[next_node]);
+            }
+        }
+        if (child > 1 && parent == -1) mark[node] = 1;
+    }
+    vector<int> articulationPoints(int V, vector<vector<int>>& edges) {
+        vector<int>vis(V,0),low(V,0),tin(V,0),mark(V,0);
+        unordered_map<int,vector<int>>adj;
+        for (auto &x : edges){
+            int u = x[0];
+            int v = x[1];
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        for (int i=0; i<V; i++){
+            if (!vis[i]){
+                DFS(i,-1,vis,low,tin,mark,adj);
+            }
+        }
+        vector<int>ans;
+        for (int i=0; i<V; i++){
+            if (mark[i] == 1){
+                ans.push_back(i);
+            }
+        }
+        if (ans.size() == 0) return {-1};
+        return ans;
+    }
+};
