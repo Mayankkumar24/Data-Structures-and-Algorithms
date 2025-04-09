@@ -1,0 +1,29 @@
+class Solution {
+  public:
+    void DFS(int curr_node,int &target_node,vector<int>&vis,unordered_map<int,vector<int>>&adj){
+        vis[curr_node] = 1;
+        for (int &next_node : adj[curr_node]){
+            if (!vis[next_node]){
+                DFS(next_node,target_node,vis,adj);
+            }
+        }
+    }
+    bool isBridge(int V, vector<vector<int>> &edges, int c, int d) {
+        unordered_map<int,vector<int>>adj;
+        for (auto &x : edges){
+            int u = x[0];
+            int v = x[1];
+            if ((u == c) && (v ==d )){
+                continue;
+            }else if ((u ==d) && (v == c)) {
+                continue;
+            }else {
+                adj[u].push_back(v);
+                adj[v].push_back(u);
+            }
+        }
+        vector<int>vis(V,0);
+        DFS(c,d,vis,adj);
+        return !(vis[d]);
+    }
+};
