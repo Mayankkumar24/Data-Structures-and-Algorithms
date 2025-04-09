@@ -1,0 +1,113 @@
+class Solution {
+  public:
+    void DFS(int curr_node,int &target_node,vector<int>&vis,unordered_map<int,vector<int>>&adj){
+        vis[curr_node] = 1;
+        for (int &next_node : adj[curr_node]){
+            if (!vis[next_node]){
+                DFS(next_node,target_node,vis,adj);
+            }
+        }
+    }
+    bool isBridge(int V, vector<vector<int>> &edges, int c, int d) {
+        unordered_map<int,vector<int>>adj;
+        for (auto &x : edges){
+            int u = x[0];
+            int v = x[1];
+            if ((u == c) && (v ==d )){
+                continue;
+            }else if ((u ==d) && (v == c)) {
+                continue;
+            }else {
+                adj[u].push_back(v);
+                adj[v].push_back(u);
+            }
+        }
+        vector<int>vis(V,0);
+        DFS(c,d,vis,adj);
+        return !(vis[d]);
+    }
+};
+
+-----------------APPROACH 02-----------------
+---------TARZAN'S ALGORITHM---------------
+
+class Solution {
+  public:
+    int C,D;
+    void DFS(int n,int p,int &t,bool &res,vector<int>&discovery,vector<int>&low,vector<bool>&vis,unordered_map<int,vector<int>>&adj){
+        vis[n] = 1;
+        discovery[n] = low[n] = t++;
+        for (int &nn : adj[n]){
+            if (!vis[nn]){
+                DFS(nn,n,t,res,discovery,low,vis,adj);
+                low[n] = min(low[n],low[nn]);
+                if ((low[nn] > discovery[n]) && ((n == C && nn == D) || (n==D && nn == C))){
+                    res = true;
+                }
+            }else if (nn != p){
+                low[n] = min(low[n],discovery[nn]);
+            }
+        }
+    }
+    bool isBridge(int V, vector<vector<int>> &edges, int c, int d) {
+        unordered_map<int,vector<int>>adj;
+        for (auto &x : edges){
+            int u = x[0], v = x[1];
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        C = c;
+        D = d;
+        vector<int>discovery(V,-1),low(V,-1);
+        vector<bool>vis(V,false);
+        int time = 0;
+        bool isBridgeEdge = false;
+        
+        for (int i=0; i<V; i++){
+            if (!vis[i]){
+                DFS(i,-1,time,isBridgeEdge,discovery,low,vis,adj);
+            }
+        }
+        return isBridgeEdge;
+    }
+};
+
+----------1192. Critical Connections in a Network (leetcode)------------------
+
+class Solution {
+public:
+void DFS(int node,int parent,int &time,vector<int>&discover,vector<int>&low,vector<int>&vis,vector<vector<int>>&ans,unordered_map<int,vector<int>>&adj){
+    vis[node] = 1;
+    discover[node] = low[node] = time++;
+    for (int &next_node : adj[node]){
+        if (!vis[next_node]){
+            DFS(next_node,node,time,discover,low,vis,ans,adj);
+            low[node] = min(low[node],low[next_node]);
+            if ((low[next_node] > discover[node])){
+                ans.push_back({next_node,node});
+            }
+        }
+        else if (next_node != parent){
+            low[node] = min(low[node],discover[next_node]);
+        }
+    }
+}
+    vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
+        unordered_map<int,vector<int>>adj;
+        for (auto &x : connections){
+            int u = x[0], v = x[1];
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        vector<int>discover(n,-1),low(n,-1);
+        vector<int>vis(n,0);
+        int time = 0;
+        vector<vector<int>>ans;
+        for (int i=0; i<n; i++){
+            if (!vis[i]){
+                DFS(i,-1,time,discover,low,vis,ans,adj);
+            }
+        }
+        return ans;
+    }
+};
