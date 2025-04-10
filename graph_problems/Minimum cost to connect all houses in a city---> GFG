@@ -1,0 +1,32 @@
+class Solution {
+  public:
+    typedef pair<int,int>p;
+    int distance(int &i, int &j,vector<vector<int>>& houses){
+        return abs(houses[i][0] - houses[j][0]) + abs(houses[i][1] - houses[j][1]);
+    }
+    int minCost(vector<vector<int>>& houses) {
+        int n = houses.size();
+        if (n == 1) return 0;
+        vector<int>vis(n,0);
+        priority_queue<p,vector<p>,greater<p>>minHeap;
+        minHeap.push({0,0});
+        int total_cost = 0, cnt = 0;
+        
+        while(!minHeap.empty() && cnt < n){
+            int cost = minHeap.top().first;
+            int node = minHeap.top().second;
+            minHeap.pop();
+            if (vis[node]) continue;
+            vis[node] = 1;
+            total_cost += cost;
+            cnt++;
+            for (int next_node = 0; next_node < n; next_node++){
+                if (!vis[next_node]){
+                    int find_dist = distance(node,next_node,houses);
+                    minHeap.push({find_dist,next_node});
+                }
+            }
+        }
+        return total_cost;
+    }
+};
