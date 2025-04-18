@@ -1,0 +1,43 @@
+class Solution {
+  public:
+    typedef pair<int,int>p;
+    int Dijsktra(int src,int dest,unordered_map<int,vector<pair<int,int>>>&adj,int &V){
+        vector<int>distance(V,INT_MAX);
+        priority_queue<p,vector<p>,greater<p>>pq;
+        pq.push({0,src});
+        distance[src] = 0;
+        while(!pq.empty()){
+            int d = pq.top().first;
+            int u = pq.top().second;
+            pq.pop();
+            for (auto &x : adj[u]){
+                int v = x.first;
+                int d2 = x.second;
+                if ((u==src && v== dest) || (v==src && u == dest)) continue;
+                else{
+                    if (distance[v] > d + d2){
+                        distance[v] = d + d2;
+                        pq.push({d+d2,v});
+                    }
+                }
+            }
+        }
+        return distance[dest];
+    }
+    int findMinCycle(int V, vector<vector<int>>& edges) {
+        unordered_map<int,vector<pair<int,int>>>adj;
+        int ans = INT_MAX;
+        for (auto &edge : edges){
+            int u = edge[0], v = edge[1], w = edge[2];
+            adj[u].push_back({v,w});
+            adj[v].push_back({u,w});
+        }
+        for (auto &edge : edges){
+            int curr = Dijsktra(edge[0],edge[1],adj,V);
+            if (curr != INT_MAX){
+                ans = min(ans,curr + edge[2]);
+            }
+        }
+        return ans;
+    }
+};
