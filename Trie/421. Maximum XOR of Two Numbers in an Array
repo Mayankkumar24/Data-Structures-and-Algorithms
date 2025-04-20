@@ -1,0 +1,63 @@
+TIME COMP----> O(N*LOG(MAX_NUM));
+SPACE COMP----> O(N);
+
+
+class Solution {
+public:
+    struct trieNode{
+        trieNode* left;
+        trieNode* right;
+    };
+    void Insert(trieNode* root,int &num){
+        trieNode* pcrawl = root;
+        for (int i=31; i>=0; i--){
+            int ith_bit = (num >> i) & 1;
+            if (ith_bit == 0){
+                if (pcrawl->left == NULL){
+                    pcrawl->left = new trieNode();
+                }
+                pcrawl = pcrawl->left;
+            }else{
+                if (pcrawl->right == NULL){
+                    pcrawl->right = new trieNode();
+                }
+                pcrawl = pcrawl->right;
+            }
+        }
+    }
+    int Find_Max_Xor(trieNode* root,int &num){
+        int maxxor = 0;
+        trieNode* pcrawl = root;
+        for (int i=31; i>=0; i--){
+            int ith_bit = (num >> i) & 1;
+            if (ith_bit == 1){
+                if (pcrawl->left != NULL){
+                    maxxor += pow(2,i);
+                    pcrawl = pcrawl->left;
+                }else{
+                    pcrawl = pcrawl->right;
+                }
+            }else{
+                if (pcrawl->right != NULL){
+                    maxxor += pow(2,i);
+                    pcrawl = pcrawl->right;
+                }else{
+                    pcrawl = pcrawl->left;
+                }
+            }
+        }
+        return maxxor;
+    }
+    int findMaximumXOR(vector<int>& nums) {
+        trieNode* root = new trieNode();
+        for (int &num : nums){
+            Insert(root,num);
+        }
+        int ans = 0;
+        for (int &x : nums){
+            int curr = Find_Max_Xor(root,x);
+            ans = max(ans,curr);
+        }
+        return ans;
+    }
+};
