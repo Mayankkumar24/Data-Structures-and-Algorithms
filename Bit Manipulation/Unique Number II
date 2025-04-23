@@ -1,0 +1,32 @@
+class Solution {
+  public:
+    vector<int> singleNum(vector<int>& arr) {
+        // Code here.
+        int Xor = 0;
+        for (int &x : arr) Xor ^= x;
+        int num = Xor & -Xor;
+        int x = 0, y = 0;
+        for (int n : arr){
+            if ((num & n)){
+                x ^= n;
+            }else{
+                y ^= n;
+            }
+        }
+        if (x > y) swap(x,y);
+        return {x,y};
+    }
+};
+
+
+--------------Unique Number 1----------------------
+
+class Solution {
+  public:
+    int findUnique(vector<int> &arr) {
+        // code here
+        int ans = arr[0];
+        for (int i=1; i<arr.size(); i++) ans ^= arr[i];
+        return ans;
+    }
+};
