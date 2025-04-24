@@ -1,0 +1,55 @@
+------------------APPROACH 01----------------------
+
+class Solution {
+  public:
+    int getSingle(vector<int> &arr) {
+        // code here
+        sort(arr.begin(),arr.end());
+        int i = 0,n = arr.size();
+        while(i<n){
+            int curr = arr[i];
+            int j = i+1;
+            int cnt = 1;
+            while(j<n && arr[j] == curr){
+                cnt++; j++;
+            }
+            if (cnt == 1) return curr;
+            i = j;
+        }
+        return -1;
+    }
+};
+
+------------APPROACH 02-----------------------
+
+class Solution {
+  public:
+    int getSingle(vector<int> &arr) {
+        // code here
+        int ans = 0;
+        int n = arr.size();
+        for (int bitIndex = 0; bitIndex < 32; bitIndex++){
+            int cnt = 0;
+            for (int x : arr){
+                if (((1 << bitIndex) & x)) cnt++;
+            }
+            if (cnt % 3 == 1) ans = ans | (1 << bitIndex);
+        }
+        return ans;
+    }
+};
+
+--------------------APPROAHC 03-------------------------
+
+class Solution {
+  public:
+    int getSingle(vector<int> &arr) {
+        // code here
+        int n = arr.size(),ones = 0, twos = 0;
+        for (int i=0; i<n; i++){
+            ones = (ones ^ arr[i]) & ~twos;
+            twos = (twos ^ arr[i]) & ~ones;
+        }
+        return ones;
+    }
+};
