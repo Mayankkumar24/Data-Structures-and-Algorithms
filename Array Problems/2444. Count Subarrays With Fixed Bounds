@@ -1,0 +1,25 @@
+TIME COMP----> O(N);
+SPACE COMP---> O(1);
+
+
+class Solution {
+public:
+    typedef long long ll;
+    long long countSubarrays(vector<int>& nums, int minK, int maxK) {
+        int n = nums.size();
+        ll ans = 0;
+        int minPos = -1,maxPos = -1,culprit_index = -1,small = -1;
+
+        for (int i=0; i<n; i++){
+            if ((nums[i] < minK) || (nums[i] > maxK)){
+                culprit_index = i;
+            }
+            if (nums[i] == minK) minPos = i;
+            if (nums[i] == maxK) maxPos = i;
+            small = min(minPos,maxPos);
+            ll temp = small - culprit_index;
+            ans += (temp <= 0 ? 0 : temp);
+        }
+        return ans;
+    }
+};
