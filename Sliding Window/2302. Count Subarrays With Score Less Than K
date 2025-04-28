@@ -1,0 +1,26 @@
+TIME COMP-----> O(N);
+SPACE COMP----> O(1);
+
+
+class Solution {
+public:
+    typedef long long ll;
+    long long countSubarrays(vector<int>& nums, long long k) {
+        int n = nums.size();
+        ll ans  = 0;
+        ll sum = 0, len = 0;
+        int i = 0, j = 0;
+        for (int i=0; i<n; i++){
+            sum += nums[i];
+            len++;
+            if ((ll) sum*len < k) ans += (i-j+1);
+            else{
+                while((ll) sum*len >= k){
+                    sum -= nums[j]; len--; j++;
+                }
+                ans += (i-j+1);
+            }
+        }
+        return ans;
+    }
+};
