@@ -1,0 +1,70 @@
+---------------- APPROACH 01--------------------
+
+TIME COMP-----> O(N^3) + o(k*log(k));
+SPACE COMP----> O(N);
+
+class Solution {
+public:
+    vector<int> findEvenNumbers(vector<int>& digits) {
+        int n = digits.size();
+        vector<int>ans;
+        unordered_map<int,int>mp;
+        for (int i=0; i<n; i++){
+            if (digits[i] == 0) continue;
+            int res = digits[i];
+            for (int j=0; j<n; j++){
+                if (i == j) continue;
+                int newres = (res * 10) + digits[j];
+                for (int k=0; k<n; k++){
+                    if ((k == i) || (k == j)) continue;
+                    if (digits[k] == 0 || digits[k]%2 == 0){
+                        int curr = (newres*10) + digits[k];
+                        mp[curr]++;
+                    }
+                }
+            }
+        }
+        for (auto &x : mp){
+            ans.push_back(x.first);
+        }
+        if (ans.size() > 0){
+            sort(ans.begin(),ans.end());
+        }
+        return ans;
+    }
+};
+
+--------------------------APPROACH 02-----------------------------
+
+TIME COMP----> O(N);
+SPACE COMP----> O(N);
+
+class Solution {
+public:
+    vector<int> findEvenNumbers(vector<int>& digits) {
+        int n = digits.size();
+        unordered_map<int,int>mp;
+        for (int &x : digits) mp[x]++;
+        vector<int>ans;
+        for (int i=100; i<=998; i+=2){
+            vector<int>curr(10,0);
+            int temp = i;
+            while(temp){
+                int digit = temp%10;
+                curr[digit]++;
+                temp = temp/10;
+            }
+            bool valid = true;
+            for (int j=0; j<=9; j++){
+                if (curr[j] > mp[j]){
+                    valid = false; break;
+                }
+            }
+            if (valid) ans.push_back(i);
+        }
+        return ans;
+        
+    }
+};
+
+
