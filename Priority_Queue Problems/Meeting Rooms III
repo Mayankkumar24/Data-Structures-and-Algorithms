@@ -1,0 +1,38 @@
+class Solution {
+  public:
+    typedef pair<int,int>p;
+    int mostBooked(int n, vector<vector<int>> &meetings) {
+        vector<int>count(n,0);
+        priority_queue<int,vector<int>,greater<int>>Free;
+        priority_queue<p,vector<p>,greater<p>>Bussy;
+        for (int i=0; i<n; i++) Free.push(i);
+        sort(meetings.begin(),meetings.end());
+        int nn = meetings.size();
+        for (int i=0; i<nn; i++){
+            int start = meetings[i][0];
+            int end   = meetings[i][1];
+            while((!Bussy.empty()) && (Bussy.top().first <= start)){
+                Free.push(Bussy.top().second);
+                Bussy.pop();
+            }
+            if (!Free.empty()){
+                int room = Free.top();
+                Free.pop();
+                count[room]++;
+                Bussy.push({end,room});
+            }else{
+                int t = Bussy.top().first;
+                int room_idx = Bussy.top().second;
+                t += (end - start);
+                Bussy.pop();
+                Bussy.push({t,room_idx});
+                count[room_idx]++;
+            }
+        }
+        int max_used = 0;
+        for (int i=0; i<n; i++){
+            if (count[i] > count[max_used]) max_used = i;
+        }
+        return max_used;
+    }
+};
