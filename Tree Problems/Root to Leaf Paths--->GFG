@@ -1,0 +1,24 @@
+class Solution {
+  public:
+    void FindPaths(Node* root,vector<int>curr,vector<vector<int>>&ans){
+        if (!root) {
+            return;
+        }
+        curr.push_back(root->data);
+        if ((root->left == NULL) && (root->right == NULL)){
+            ans.push_back(curr);
+            //return;
+        }
+        FindPaths(root->left,curr,ans);
+        FindPaths(root->right,curr,ans);
+        curr.pop_back();
+    }
+    vector<vector<int>> Paths(Node* root) {
+        // code here
+        vector<vector<int>>ans;
+        vector<int>curr;
+        FindPaths(root,curr,ans);
+        return ans;
+        
+    }
+};
