@@ -1,0 +1,48 @@
+---------------------APPROACH 02-------------------------
+Time comp ---> O(N & log(N));
+Space comp----> O(N);
+
+class Solution {
+public:
+    long long maximumValueSum(vector<int>& nums, int k, vector<vector<int>>& edges) {
+        long long ans = 0;
+        vector<int>Profit;
+        for (int &num : nums){
+            ans += (long long) num;
+            Profit.push_back((num ^ k) - num);
+        }
+        sort(Profit.rbegin(),Profit.rend());
+        int n = Profit.size();
+        for (int i=0; i<n-1; i+= 2){
+            int PairSum = Profit[i] + Profit[i+1];
+            if (PairSum > 0){
+                ans += (long long) (PairSum);
+            }
+        }
+        return ans;
+    }
+};
+
+---------------------APPROACH 01--------------------------
+Time comp ---> O(N);
+Space comp---> O(1);
+
+class Solution {
+public:
+    typedef long long ll;
+    long long maximumValueSum(vector<int>& nums, int k, vector<vector<int>>& edges) {
+        ll sum = 0;
+        int cnt = 0;
+        int MinLoss = INT_MAX;
+        for (ll num : nums){
+            if ((num ^ k) > num){
+                sum += (ll) (num^k); cnt++;
+            }else{
+                sum += num;
+            }
+            MinLoss = min((ll) MinLoss,abs(num - (num ^ k)));
+        }
+        if (cnt%2 == 0) return sum;
+        return sum - (ll) MinLoss;
+    }
+};
