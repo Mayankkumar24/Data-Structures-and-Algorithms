@@ -1,0 +1,38 @@
+class Solution {
+public:
+    int FindSum(int x){
+        int sum = 0;
+        while(x > 0){
+            sum += (x%10);
+            x /= 10;
+        }
+        return sum;
+    }
+    int minSwaps(vector<int>& nums) {
+        int n = nums.size();
+        vector<int>v = nums;
+        sort(v.begin(),v.end(),[&] (int a, int b){
+            int SumA = FindSum(a);
+            int SumB = FindSum(b);
+            if (SumA == SumB) return a < b;
+            return SumA < SumB;
+        });
+        unordered_map<int,int>mp;
+        for (int i=0; i<n; i++) mp[nums[i]] = i;
+        int MinSwaps = 0;
+        vector<int>vis(n,0);
+        for (int i=0; i<n; i++){
+            if ((vis[i]) || (nums[i] == v[i])) continue;
+            int j = i, cycle_swap = 0;
+            while(!vis[j]){
+                vis[j] = 1;
+                j = mp[v[j]];
+                cycle_swap++;
+            }
+            if (cycle_swap > 1){
+                MinSwaps += (cycle_swap-1);
+            }
+        }
+        return MinSwaps;
+    }
+};
