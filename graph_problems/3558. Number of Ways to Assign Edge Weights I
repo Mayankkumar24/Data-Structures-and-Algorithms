@@ -1,0 +1,32 @@
+class Solution {
+public:
+    int max_depth = 0;
+    const int mod = 1e9 + 7;
+    void DFS(int curr_node,int Parent,int curr_depth,unordered_map<int,vector<int>>&adj){
+        max_depth = max(max_depth,curr_depth);
+        for (int &next_node : adj[curr_node]){
+            if (next_node != Parent){
+                DFS(next_node,curr_node,curr_depth+1,adj);
+            }
+        }
+    }
+    int Solve(int i, long long sum,vector<int>&dp,int &n){
+        if (i == n){
+            return (sum%2 != 0 ? 1 : 0);
+        }
+        if (dp[i] != -1) return dp[i];
+        return dp[i] = (Solve(i+1,sum+1,dp,n)%mod + Solve(i+1,sum+2,dp,n)%mod)%mod;
+    }
+    int assignEdgeWeights(vector<vector<int>>& edges) {
+        unordered_map<int,vector<int>>adj;
+        for (auto &edge : edges){
+            int u = edge[0];
+            int v = edge[1];
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        DFS(1,-1,0,adj);
+        vector<int>dp(max_depth,-1);
+        return Solve(0,0,dp,max_depth);
+    }
+};
