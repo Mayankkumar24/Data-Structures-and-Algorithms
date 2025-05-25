@@ -1,0 +1,25 @@
+class Solution {
+public:
+    int longestPalindrome(vector<string>& words) {
+        int n = words.size();
+        unordered_map<string,int>mp;
+        int ans = 0;
+        for (int i=0; i<n; i++){
+            string ReverseWord = words[i];
+            swap(ReverseWord[0],ReverseWord[1]);
+            if (mp[ReverseWord] > 0){
+                ans += 4; mp[ReverseWord]--;
+            }else{
+                mp[words[i]]++;
+            }
+        }
+        for (auto &x : mp){
+            string word = x.first;
+            int  cnt    = x.second;
+            if ((word[0] == word[1]) && (cnt > 0)){
+                ans += 2; break;
+            }
+        }
+        return ans;
+    }
+};
