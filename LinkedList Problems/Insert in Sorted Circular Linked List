@@ -1,0 +1,29 @@
+Time comp---> O(n);
+Space comp--> O(1);
+
+class Solution {
+  public:
+    Node* sortedInsert(Node* head, int data) {
+        // code here
+        Node* NewNode = new Node(data);
+        if (head == NULL){
+            NewNode->next = NewNode;
+            return NewNode;
+        }
+        Node* current = head;
+        if (data <= head->data){
+            while(current->next != head){
+                current = current->next;
+            }
+            current->next = NewNode;
+            NewNode->next = head;
+            return NewNode;
+        }
+        while(current->next != head && data > current->next->data){
+            current = current->next;
+        }
+        NewNode->next = current->next;
+        current->next = NewNode;
+        return head;
+    }
+};
