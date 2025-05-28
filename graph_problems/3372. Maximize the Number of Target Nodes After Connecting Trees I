@@ -1,0 +1,55 @@
+class Solution {
+public:
+    void DFS(int curr_node, int k,int &Total,vector<int>&vis,unordered_map<int,vector<int>>&adj){
+        if (k <= 0) {
+            return;
+        }
+        for (int &next_node : adj[curr_node]){
+            if (!vis[next_node]){
+                Total += 1;
+                vis[next_node] = 1;
+                DFS(next_node,k-1,Total,vis,adj);
+            }
+        }
+        return;
+    }
+    vector<int> maxTargetNodes(vector<vector<int>>& edges1, vector<vector<int>>& edges2, int k) {
+        int n = edges1.size() + 1;
+        int m = edges2.size() + 1;
+        unordered_map<int,vector<int>>adj1,adj2;
+        for (auto &edge : edges1){
+            int u = edge[0];
+            int v = edge[1];
+            adj1[u].push_back(v);
+            adj1[v].push_back(u);
+        } 
+        for (auto &edge : edges2){
+            int u = edge[0];
+            int v = edge[1];
+            adj2[u].push_back(v);
+            adj2[v].push_back(u);
+        }
+        vector<int>DistForAdj1(n,0);
+        for (int i=0; i<n; i++){
+            vector<int>vis(n,0);
+            vis[i] = 1;
+            int Total = 1;
+            DFS(i,k,Total,vis,adj1);
+            DistForAdj1[i] = Total;
+        }
+        if (k == 0) return DistForAdj1;
+        vector<int>DistForAdj2(m,0);
+        for (int i=0; i<m; i++){
+            vector<int>vis(m,0);
+            vis[i] = 1;
+            int Total = 1;
+            DFS(i,k-1,Total,vis,adj2);
+            DistForAdj2[i] = Total;
+        }
+        int maxi = *max_element(DistForAdj2.begin(),DistForAdj2.end());
+        for (int i=0; i<n; i++){
+            DistForAdj1[i] += maxi;
+        }
+        return DistForAdj1;
+    }
+};
