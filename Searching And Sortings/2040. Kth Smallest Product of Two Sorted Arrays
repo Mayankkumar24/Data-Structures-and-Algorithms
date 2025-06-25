@@ -1,0 +1,49 @@
+TIME COMP---> O(HIGH-LOW) * O(N*LOG(M));
+SPACE COMP---> O(1);
+WHERE HIGH = 1E10 AND LOW = -1E10 AND N = NUMS1.SIZE() AND M = NUMS2.SIZE();
+
+class Solution {
+public:
+    typedef long long ll;
+    ll FindCountSmallest(vector<int>&nums1,vector<int>&nums2,ll midProd){
+        ll ProdCnt = 0; int n = nums2.size();
+        for (int i=0; i<nums1.size(); i++){
+            if (nums1[i] >= 0){
+                int l = 0, r = n-1;
+                int m = -1;
+                while(l <= r){
+                    int mid = (l + r)/2;
+                    ll Prod = (1LL) * nums1[i] * nums2[mid];
+                    if (Prod <= midProd){
+                        m = mid; l = mid+1;
+                    }else r = mid-1;
+                }
+                ProdCnt += m+1;
+            }else{
+                int l = 0,r = n-1, m = n;
+                while(l <= r){
+                    int mid = (l + r)/2;
+                    ll Prod = (1LL) * nums1[i] * nums2[mid];
+                    if (Prod <= midProd){
+                        m = mid; r = mid-1;
+                    }else l = mid+1;
+                }
+                ProdCnt += (n-m);
+            }
+        }
+        return ProdCnt;
+    }
+    long long kthSmallestProduct(vector<int>& nums1, vector<int>& nums2, long long k) {
+        ll res = 0;
+        ll low = -1e10,high = 1e10;
+        while(low <= high){
+            ll midProd = 1LL * (low + high)/2;
+            ll cntSmallest = FindCountSmallest(nums1,nums2,midProd);
+            if (cntSmallest >= k){
+                res = midProd;
+                high = midProd-1;
+            }else low = midProd+1;
+        }
+        return res;
+    }
+};
