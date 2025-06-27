@@ -1,0 +1,117 @@
+TIME COMP---> O(N * (N/K));
+SPACE COMP--> O(N/K);
+
+class Solution {
+public:
+    bool isSub(string &s,string &curr,int &k){
+        int n = s.size();
+        int l = curr.size();
+        int i = 0,j = 0;
+        while(i<n && j < k*l){
+            if (s[i] == curr[j%l]){
+                j++;
+            }
+            i++;
+        }
+        return j == k*l;
+    }
+    void BackTracking(string &s,string curr,string &res,vector<bool>&CanUse,vector<int>ReqFreq,int &k,int &MaxLen){
+        if ((curr.length() > MaxLen)) return ;
+        if ((curr.length()>res.length() || (curr.length() == res.length() && curr.length() != 0)) && (isSub(s,curr,k))){
+            if (curr.length() == res.length()){
+                res = max(res,curr);
+            }
+            else if (curr.length() > res.length()){
+                res = curr;
+            }
+        }
+        for (int i=0; i<26; i++){
+            if (CanUse[i] == false || ReqFreq[i] == 0) continue;
+            char ch = i + 'a';
+            curr.push_back(ch);
+            ReqFreq[ch-'a']--;
+            BackTracking(s,curr,res,CanUse,ReqFreq,k, MaxLen);
+            curr.pop_back();
+            ReqFreq[ch-'a']++;
+        }
+    }
+    string longestSubsequenceRepeatedK(string s, int k) {
+        int n = s.size();
+        vector<int>Freq(26,0);
+        for (char &ch : s) Freq[ch-'a']++;
+        vector<bool>CanUse(26,false);
+        vector<int>ReqFreq(26,0);
+
+        for (int i=0; i<26; i++){
+            if (Freq[i] >= k){
+                CanUse[i] = true; ReqFreq[i] = Freq[i]/k;
+            }
+        }
+        int MaxLen = n/k;
+        string curr = "";
+        string res  = "";
+        BackTracking(s,curr,res,CanUse,ReqFreq,k,MaxLen);
+        return res;
+    }
+};
+
+
+---------------SMALL OPTIMIZATION--------------------
+
+class Solution {
+public:
+    bool isSub(string &s,string &curr,int &k){
+        int n = s.size();
+        int l = curr.size();
+        int i = 0,j = 0;
+        while(i<n && j < k*l){
+            if (s[i] == curr[j%l]){
+                j++;
+            }
+            i++;
+        }
+        return j == k*l;
+    }
+    bool BackTracking(string &s,string curr,string &res,vector<bool>&CanUse,vector<int>ReqFreq,int &k,int &MaxLen){
+        if (curr.length() == MaxLen){
+            if (isSub(s,curr,k)) {
+                res = curr; return true;
+            }
+            return false;
+        }
+        for (int i=25; i>=0; i--){
+            if (CanUse[i] == false || ReqFreq[i] == 0) continue;
+            char ch = i + 'a';
+            curr.push_back(ch);
+            ReqFreq[ch-'a']--;
+            if (BackTracking(s,curr,res,CanUse,ReqFreq,k, MaxLen)) return true;
+            curr.pop_back();
+            ReqFreq[ch-'a']++;
+        }
+        return false;
+    }
+    string longestSubsequenceRepeatedK(string s, int k) {
+        int n = s.size();
+        vector<int>Freq(26,0);
+        for (char &ch : s) Freq[ch-'a']++;
+        vector<bool>CanUse(26,false);
+        vector<int>ReqFreq(26,0);
+
+        for (int i=0; i<26; i++){
+            if (Freq[i] >= k){
+                CanUse[i] = true; ReqFreq[i] = Freq[i]/k;
+            }
+        }
+        int MaxLen = n/k;
+        string curr = "";
+        string res  = "";
+        for (int len=MaxLen; len >= 0; len--){
+            vector<int>tempReqFreq = ReqFreq;
+            if (BackTracking(s,curr,res,CanUse,ReqFreq,k,len)){
+                return res;
+            }
+        }
+        //BackTracking(s,curr,res,CanUse,ReqFreq,k,MaxLen);
+        return "";
+    }
+};
