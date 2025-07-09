@@ -1,0 +1,70 @@
+-----------------------APPROACH 01----------------------------
+TIME COMP ----> O(N*LOG(N)) + O(N*K*N);
+SPACE COMP----> O(N*K);
+
+class Solution {
+public:
+    int Solve(int i,int k,vector<vector<int>>& events,vector<vector<int>>&dp){
+        if (k==0 || i >= events.size()){
+            return 0;
+        }
+        if (dp[i][k] != -1) return dp[i][k];
+        int skip = Solve(i+1,k,events,dp);
+        int take = 0;
+        int j = i+1;
+        for (; j<events.size(); j++){
+            if (events[j][0] > events[i][1]){
+                break;
+            }
+        }
+        take = events[i][2] + Solve(j,k-1,events,dp);
+        return dp[i][k] = max(take,skip);
+    }
+    int maxValue(vector<vector<int>>& events, int k) {
+        sort(events.begin(),events.end());
+        int n = events.size();
+        vector<vector<int>>dp(n+1,vector<int>(k+1,-1));
+        return Solve(0,k,events,dp);
+    }
+};
+
+
+------------------------APPROACH 02--------------------------
+
+TIME COMP----> O(N*LOG(N)) + O(N*K*(LOG(N));
+SPACE COMP---> O(N*K);
+
+class Solution {
+public:
+    int Find_Next_Day(int i,int j,int curr_time,vector<vector<int>>&events){
+        int idx = events.size();
+        while(i<=j){
+            int mid = (i+j)/2;
+            if (events[mid][0] > curr_time){
+                idx = mid; j = mid-1;
+            }else{
+                i = mid+1;
+            }
+        }
+        return idx;
+        
+    }
+    int Solve(int i,int k,vector<vector<int>>& events,vector<vector<int>>&dp){
+        if (k==0 || i >= events.size()){
+            return 0;
+        }
+        if (dp[i][k] != -1) return dp[i][k];
+        int skip = Solve(i+1,k,events,dp);
+        int take = 0;
+        int j = i+1;
+        j = Find_Next_Day(i+1,events.size()-1,events[i][1],events);
+        take = events[i][2] + Solve(j,k-1,events,dp);
+        return dp[i][k] = max(take,skip);
+    }
+    int maxValue(vector<vector<int>>& events, int k) {
+        sort(events.begin(),events.end());
+        int n = events.size();
+        vector<vector<int>>dp(n+1,vector<int>(k+1,-1));
+        return Solve(0,k,events,dp);
+    }
+};
