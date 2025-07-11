@@ -1,0 +1,41 @@
+-------------------APPROACH 01---------------------
+TIME COMP----> O(N*N);
+SPACE COMP---> O(N*N);
+
+class Solution {
+  public:
+    int solve(int i, int cnt, int n, vector<vector<int>>&dp){
+        if (i >= n) return 1;
+        if (dp[i][cnt] != -1) return dp[i][cnt];
+        int ways = solve(i+2,cnt+1,n,dp) + solve(i+1,cnt,n,dp);
+        return dp[i][cnt] = ways;
+    }
+    int countConsec(int n) {
+        // code here
+        int total = pow(2,n);
+        vector<vector<int>>dp(n,vector<int>(n,-1));
+        int ans = total - solve(0,0,n,dp);
+        return ans;
+    }
+};
+
+
+--------------APPROACH 02-------------------
+TIME COMP----> O(N);
+SPACE COMP---> O(1);
+
+class Solution {
+  public:
+    int countConsec(int n) {
+        // code here
+        int a = 0, b = 1;
+        int res = 1;
+        for (int i=2; i<n; i++){
+            int c = a + b;
+            a = b;
+            b = c;
+            res = (res * 2 + c);
+        }
+        return res;
+    }
+};
