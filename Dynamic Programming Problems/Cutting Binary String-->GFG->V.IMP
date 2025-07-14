@@ -1,0 +1,38 @@
+class Solution {
+  public:
+    bool Check_Five(string temp){
+        if (temp.size() > 0 && temp.back() == '0') return false;
+        int ans = 0, cnt = 0;
+        for (char ch : temp){
+            ans += ((int) (ch-'0')) << (cnt++);
+        }
+        if (ans == 0) return false;
+        int ele = 1;
+        while(ans > ele){
+            ele *= 5;
+        }
+        return ans == ele;
+    }
+    int Solve(int i, string temp, string &s){
+        if (i >= s.length()){
+            if (temp == "") return 0;
+            else return 1e9;
+        }
+        int ans = 1e9;
+        temp.push_back(s[i]);
+        if (Check_Five(temp)){
+            string newTemp = "";
+            ans = min(ans, 1 + Solve(i+1,newTemp,s));
+        }
+        ans = min(ans,Solve(i+1,temp,s));
+        return ans;
+    }
+    int cuts(string s) {
+        // code here
+        int n = s.length();
+        reverse(s.begin(),s.end());
+        string temp = "";
+        int ans = Solve(0,temp,s);
+        return ans >= 1e9 ? -1 : ans;
+    }
+};
