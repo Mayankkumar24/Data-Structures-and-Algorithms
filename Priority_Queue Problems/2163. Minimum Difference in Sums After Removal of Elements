@@ -1,0 +1,50 @@
+TIME COMP---> O(N*LOG(N));
+SPACE COMP--> O(N);
+
+
+class Solution {
+public:
+    typedef long long ll;
+    long long minimumDifference(vector<int>& nums) {
+        ll n = nums.size();
+        ll k = n/3;
+        vector<ll>leftmins(n),rightmaxs(n);
+        priority_queue<int>leftMaxHeap;
+        priority_queue<int,vector<int>,greater<int>>rightMinHeap;
+        ll leftsum = 0, rightsum = 0, ans = LLONG_MAX;
+
+        for (int i=0; i<k; i++){
+            leftsum += nums[i]; leftMaxHeap.push(nums[i]);
+        }
+        leftmins[k-1] = leftsum;
+
+        for (int i=k; i<n-k; i++){
+            if(!leftMaxHeap.empty() && nums[i] < leftMaxHeap.top()){
+                leftsum += (nums[i] - leftMaxHeap.top());
+                leftMaxHeap.pop();
+                leftMaxHeap.push(nums[i]);
+            }
+            leftmins[i] = leftsum;
+        }
+
+        for (int i=n-1; i>=n-k; i--){
+            rightsum += nums[i];
+            rightMinHeap.push(nums[i]);
+        }
+        rightmaxs[n-k] = rightsum;
+
+        for (int i=n-k-1; i>=k-1; i--){
+            if(!rightMinHeap.empty() && nums[i] > rightMinHeap.top()){
+                rightsum += (nums[i] - rightMinHeap.top());
+                rightMinHeap.pop();
+                rightMinHeap.push(nums[i]);
+            }
+            rightmaxs[i] = rightsum;
+        }
+
+        for (int i=k-1; i<n-k; i++){
+            ans = min(ans,leftmins[i] - rightmaxs[i+1]);
+        }
+        return ans;
+    }
+};
