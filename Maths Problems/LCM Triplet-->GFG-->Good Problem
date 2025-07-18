@@ -1,0 +1,81 @@
+-----------------BRUTE FORCE APPROACH--------------------------
+TIME COMP--> O(N^3 * (LOG(N)));
+SPACE COMP--> O(N);
+
+class Solution {
+  public:
+   int lcm(int a,int b){
+       return (a*b)/__gcd(a,b);
+   }
+    int lcmTriplets(int n) {
+        // code here
+        if (n <= 2) return n;
+        int ans = 0;
+        for (int i=n; i>=1; i--){
+            for (int j=n; j>=1; j--){
+                for (int k=n; k>=1; k--){
+                    int LCM_NUM = lcm(lcm(i,j),k);
+                    ans = max(ans,LCM_NUM);
+                }
+            }
+        }
+        return ans;
+    }
+};
+
+----------------------OPTIMAL APPROACH-----------------
+TIME COMP---> O(LOG(N));
+SPACE COMP--> O(1);
+
+class Solution {
+  public:
+   int lcm(int a,int b){
+       return (a*b)/__gcd(a,b);
+   }
+    int lcmTriplets(int n) {
+        // code here
+        if (n <= 2) return n;
+        int ans = 0;
+        if (n%2 != 0){
+            ans = lcm(lcm(n,n-1),n-2);
+        }else{
+            int l1 = lcm(lcm(n,n-1),n-3);
+            int l2 = lcm(lcm(n-1,n-2),n-3);
+            ans = max(l1,l2);
+        }
+        return ans;
+    }
+};
+
+---------------------MOST OPTIMAL APPROACH-----------------------
+TIME COMP----> O(1);
+SPACE COMP---> O(1);
+
+
+class Solution {
+  public:
+   int gcd(int a, int b){
+        while(a != 0 && b != 0){
+           if (a >= b) a %= b;
+           else b %= a;
+        }
+        if (b==0) return a;
+        return b;
+   }
+   int lcm(int a,int b){
+       return (a*b)/gcd(a,b);
+   }
+    int lcmTriplets(int n) {
+        // code here
+        if (n <= 2) return n;
+        int ans = 0;
+        if (n%2 != 0){
+            ans = lcm(lcm(n,n-1),n-2);
+        }else{
+            int l1 = lcm(lcm(n,n-1),n-3);
+            int l2 = lcm(lcm(n-1,n-2),n-3);
+            ans = max(l1,l2);
+        }
+        return ans;
+    }
+};
