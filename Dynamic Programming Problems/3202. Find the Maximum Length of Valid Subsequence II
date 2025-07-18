@@ -1,0 +1,48 @@
+----------------BRUTE FORCE APPROACH----------------------
+TIME COMP-----> O(2^N);
+SPACE COMP----> O(N) A.SPACE
+
+
+class Solution {
+public:
+    int Solve(int i, int prv,int mod,int &k,vector<int>&nums){
+        if (i >= nums.size()) return 0;
+        int take = 0;
+        if (prv == -1 || (nums[prv]+nums[i])%k == mod){
+            take = 1 + Solve(i+1,i,mod,k,nums);
+        }
+        int skip = Solve(i+1,prv,mod,k,nums);
+        return max(take,skip);
+    }
+    int maximumLength(vector<int>& nums, int k) {
+        int n = nums.size();
+        int maxSubLen = 0;
+        for (int mod = 0; mod < k; mod++){
+            maxSubLen = max(maxSubLen,Solve(0,-1,mod,k,nums));
+        }
+        return maxSubLen;
+    }
+};
+
+
+--------------------OPTIMAL APPROACH (BOTTOM UP DP)------------------
+TIME COMP----> O(N^2);
+SPACE COMP---> O(N*K);
+
+class Solution {
+public:
+    int maximumLength(vector<int>& nums, int k) {
+        int n = nums.size();
+        vector<vector<int>>dp(k,vector<int>(n,1));
+        int maxSubLen = 1;
+        
+        for (int i=1; i<n; i++){
+            for (int j=0; j<i; j++){
+                int mod = (nums[i] + nums[j])%k;
+                dp[mod][i] = max(dp[mod][i],1+dp[mod][j]);
+                maxSubLen = max(maxSubLen,dp[mod][i]);
+            }
+        }
+        return maxSubLen;
+    }
+};
