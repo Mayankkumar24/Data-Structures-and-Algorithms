@@ -1,0 +1,61 @@
+--------------BRUTE FORCE APPROACH-------------------
+TIME COMP----> O(N*N*K);
+SPACE COMP---> O(N);
+
+
+class Solution {
+public:
+    vector<string> removeSubfolders(vector<string>& folder) {
+        unordered_set<int>store;
+        int n = folder.size();
+
+        for (int i=0; i<n; i++){
+            if (store.find(i) != store.end()) continue;
+            else{
+                for (int j=0; j<n; j++){
+                    if (i != j){
+                        if (folder[j].find(folder[i])== 0 && folder[j][folder[i].size()] == '/'){
+                            store.insert(j);
+                        }
+                    }
+                }
+            }
+        }
+        vector<string>ans;
+        for (int i=0; i<n; i++){
+            if (store.find(i) == store.end()){
+                ans.push_back(folder[i]);
+            }
+        }
+        return ans;
+    }
+};
+
+
+
+--------------------OPTIMAL APPROACH----------------------
+TIME COMP----> O(N*LOG(N));
+SPACE COMP---> O(1);
+
+class Solution {
+public:
+    vector<string> removeSubfolders(vector<string>& folder) {
+        int n = folder.size();
+        sort(folder.begin(),folder.end());
+        vector<string>ans;
+
+        for (const auto &f : folder){
+            if (ans.empty()){
+                ans.push_back(f);
+            }else{
+                string prv = ans.back();
+                if (f.find(prv) == 0 && f.size() > prv.size() && f[prv.size()] == '/'){
+                    continue;
+                }else{
+                    ans.push_back(f);
+                }
+            }
+        } 
+        return ans; 
+    }
+};
