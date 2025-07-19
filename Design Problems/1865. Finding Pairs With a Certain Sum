@@ -1,0 +1,92 @@
+----------------BRUTE FORCE APPROACH---------------------
+TIME COMP--> O(N*M);
+SPACE COMP-> O(1);
+
+class FindSumPairs {
+public:
+    vector<int>copy_nums1;
+    vector<int>copy_nums2;
+    FindSumPairs(vector<int>& nums1, vector<int>& nums2) {
+        for (int &x : nums1) copy_nums1.push_back(x);
+        for (int &x : nums2) copy_nums2.push_back(x);
+    }
+    
+    void add(int index, int val) {
+        copy_nums2[index] += val;
+    }
+    
+    int count(int tot) {
+        int n = copy_nums1.size();
+        int m = copy_nums2.size();
+        int pairs = 0;
+        for (int i=0; i<n; i++){
+            for (int j=0; j<m; j++){
+                if (copy_nums1[i] + copy_nums2[j] == tot) pairs++;
+            }
+        }
+        return pairs;
+    }
+};
+
+---------------BETTER APPROACH-------------------
+TIME COMP----> O(N * LOG(M));
+SPACE COMP---> O(N);
+
+class FindSumPairs {
+public:
+    vector<int>copy_nums1;
+    vector<int>copy_nums2;
+    FindSumPairs(vector<int>& nums1, vector<int>& nums2) {
+        for (int &x : nums1) copy_nums1.push_back(x);
+        for (int &x : nums2) copy_nums2.push_back(x);
+    }
+    
+    void add(int index, int val) {
+        copy_nums2[index] += val;
+    }
+    
+    int count(int tot) {
+        int n = copy_nums1.size();
+        int m = copy_nums2.size();
+        int pairs = 0;
+        unordered_map<int,int>mp;
+        for (int &x : copy_nums2) mp[x]++;
+        for (int &b : copy_nums1){
+            int a = tot-b;
+            pairs += mp[a];
+
+        }
+        return pairs;
+    }
+};
+
+--------------------OPTIMAL APPROACH------------------
+TIME COMP---> O(M);
+SPACE COMP---> O(N);
+
+class FindSumPairs {
+private:
+    vector<int>n1,n2;
+    unordered_map<int,int>mp;
+public:
+    FindSumPairs(vector<int>& nums1, vector<int>& nums2) {
+        n1 = nums1;
+        n2 = nums2;
+        for (int x : n2) mp[x]++;
+    }
+    
+    void add(int index, int val) {
+        mp[n2[index]]--;
+        n2[index]+=val;
+        mp[n2[index]]++;
+    }
+    
+    int count(int tot) {
+        int pairs = 0;
+        for (int x : n1){
+            pairs += mp[tot-x];
+        }
+        return pairs;
+    }
+};
+
