@@ -1,0 +1,69 @@
+-------leetcode 2044-----------
+
+------RECURSION APPROACH-------
+TIME COMP----> O(N*2^N);
+SPACE COMP---> O(N) A.SPACE + O(2^N);
+
+
+class Solution {
+public:
+    void GenerateAllSubsets(int idx, vector<int>&temp,vector<int>&nums,vector<vector<int>>&Subsets){
+        if (idx == nums.size()){
+            Subsets.push_back(temp);
+            return;
+        }
+        temp.push_back(nums[idx]);
+        GenerateAllSubsets(idx+1,temp,nums,Subsets);
+        temp.pop_back();
+        GenerateAllSubsets(idx+1,temp,nums,Subsets);
+    }
+    int countMaxOrSubsets(vector<int>& nums) {
+        vector<vector<int>>Subsets;
+        vector<int>temp;
+        GenerateAllSubsets(0,temp,nums,Subsets);
+        int Xor = 0;
+        int ans = 0;
+        for (int i=0; i<nums.size(); i++) Xor |= nums[i];
+        for (auto x : Subsets){
+            int curr_xor = 0;
+            for (int n : x){
+                curr_xor |= n;
+            }
+            if (curr_xor == Xor) ans++;
+        }
+        return ans;
+    }
+};
+
+
+---------ITERATIVE APPROACH USING BIT MANIPULATION--------
+TIME COMP----> O(N*2*N);
+SPACE COMP---> O(2^N);
+
+
+class Solution {
+public:
+    int countMaxOrSubsets(vector<int>& nums) {
+        int n = nums.size();
+        vector<vector<int>>Subsets;
+        for (int mask = 0; mask < (1 << n); mask++){
+            vector<int>curr;
+            for (int i=0; i<n; i++){
+                if (mask & (1 << i)) curr.push_back(nums[i]);
+            }
+            Subsets.push_back(curr);
+        }
+        int Xor = 0;
+        for (int num: nums) Xor |= num;
+        int ans = 0;
+        for (auto x : Subsets){
+            int curr = 0;
+            for (int num : x){
+                curr |= num;
+            }
+            if (curr == Xor) ans++;
+        }
+        return ans;
+
+    }
+};
