@@ -1,3 +1,83 @@
+---------------BRUTE FORCE APPROACH----------------
+TIME COMP----> O(2 * (N^2));
+SPACE COMP---> O(1);
+
+class Solution {
+public:
+    int longestSubarray(vector<int>& nums) {
+        
+        int n = nums.size();
+        int max_and = 0;
+        for (int i=0; i<n; i++){
+            int curr_and = nums[i];
+            for (int j=i; j<n; j++){
+                curr_and &= nums[j];
+                max_and = max(max_and,curr_and);
+            }
+        }
+        int max_length = 1;
+        for (int i=0; i<n; i++){
+            int curr_and = nums[i];
+            for (int j=i; j<n; j++){
+                curr_and &= nums[j];
+                if (curr_and == max_and){
+                    max_length = max(max_length,j-i+1);
+                }
+            }
+        }
+        return max_length;
+    }
+};
+
+
+
+-------------------OPTIMAL APPROACH-----------------
+TIME COMP-----> O(N*31);
+SPACE COMP----> O(N);
+class Solution {
+public:
+    int longestSubarray(vector<int>& nums) {
+        int n = nums.size();
+        int length = 1;
+        int max_and = *max_element(nums.begin(),nums.end());
+        int curr_and = nums[0];
+        int k = 0;
+        for (int i=1; i<n; i++){
+            bool f = true;
+            for (int j=0; j<31; j++){
+                int curr_num_bit = nums[i] & (1 << j);
+                int curr_and_bit = curr_and & (1 << j);
+                if (curr_num_bit == curr_and_bit){
+                    continue;
+                }else{
+                    if (curr_and > max_and){
+                        max_and = curr_and;
+                        length = (i - k);
+                    }else if (curr_and == max_and){
+                        length = max(length,i-k);
+                    }
+                    curr_and = nums[i];
+                    k = i;
+                    //f2 = false;
+                    f = false; break;
+                }
+            }
+            if (f){
+                curr_and &= nums[i];
+                if (curr_and >= max_and){
+                    max_and = curr_and;
+                    length = max(length,i-k+1);
+                }
+            }
+        }
+        return length;
+    }
+};
+
+-------------------MOST OPTIMAL APPROACH------------------
+TIME COMP----> O(N);
+SPACE COMP---> O(1);
+
 class Solution {
 public:
     int longestSubarray(vector<int>& nums) {
