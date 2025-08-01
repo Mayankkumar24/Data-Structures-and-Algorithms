@@ -1,0 +1,59 @@
+---------------------BRUTE FORCE APPROACH-------------------------
+TIME COMP-----> O(N^2 * (M));
+SPACE COMP-----> O(1);
+
+class Solution {
+  public:
+    pair<int,int> CountVowelCons(string &s){
+        int v = 0,c  = 0;
+        for (int i=0; i<s.size(); i++){
+            char ch = s[i];
+            if (ch=='a'||ch=='e'||ch=='i'||ch=='o'||ch == 'u') c++;
+            else v++;
+        }
+        return make_pair(v,c);
+    }
+    int countBalanced(vector<string>& arr) {
+        // code here
+        int ans = 0, n = arr.size();
+        for (int i=0; i<n; i++){
+            pair<int,int>voCo = CountVowelCons(arr[i]);
+            int vowel = voCo.first;
+            int conso = voCo.second;
+            if (vowel == conso) ans++;
+            for (int j=i+1; j<n; j++){
+                pair<int,int>v = CountVowelCons(arr[j]);
+                vowel += v.first;
+                conso += v.second;
+                if (vowel == conso) ans++;
+            }
+        }
+        return ans;
+    }
+};
+
+
+---------------------OPTIMAL APPROACH---------------------------
+TIME COMP------> O(N*M + LOG(N)) ;
+SPACE COMP -----> O(N);
+
+class Solution {
+  public:
+    int countBalanced(vector<string>& arr) {
+        // code here
+        int n = arr.size(), ans = 0;
+        unordered_map<int,int>mp;
+        mp[0] = 1;
+        int cnt = 0;
+        for (int i=0; i<n; i++){
+            for (char ch : arr[i]){
+                if (ch=='a'||ch=='e'||ch=='i'||ch=='o'||ch=='u') cnt++;
+                else cnt--;
+            }
+            ans += mp[cnt];
+            mp[cnt]++;
+        }
+        return ans;
+    }
+};
+
