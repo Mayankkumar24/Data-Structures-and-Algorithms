@@ -1,0 +1,71 @@
+---------------------------BRUTE FORCE APPROACH-------------------------------------
+TIME COMP------> O(K * N * M);
+SPACE COMP-----> O(1);
+
+class Solution {
+  public:
+    void ApplyOperation(vector<int>&info,vector<vector<int>>& mat){
+        int val = info[0],r1 = info[1],c1 = info[2],r2 = info[3];
+        int c2  = info[4];
+        while(c1 <= c2){
+            int col = c1, row = r1;
+            while(row <= r2){
+                mat[row][col] += val;
+                row++;
+            }
+            c1++;
+        }
+    }
+    vector<vector<int>> applyDiff2D(vector<vector<int>>& mat,
+                                    vector<vector<int>>& opr) {
+        // code here
+        int n = mat.size();
+        int m = mat[0].size();
+        
+        for (vector<int>&info : opr){
+            ApplyOperation(info,mat);
+        }
+        return mat;
+    }
+};
+
+
+----------------------------OPTIMAL APPROACH------------------------------------
+TIME COMP-------> O(N*M);
+SPACE COMP------> O(N*M);
+
+class Solution {
+  public:
+    vector<vector<int>> applyDiff2D(vector<vector<int>>& mat,
+                                    vector<vector<int>>& opr) {
+        // code here
+        int m = mat.size(), n = mat[0].size();
+        vector<vector<int>>Changes(m+1,vector<int>(n+1,0));
+        
+        for (vector<int>Info : opr){
+            int val = Info[0],r1 = Info[1],c1 = Info[2];
+            int  r2 = Info[3], c2 = Info[4];
+            Changes[r1][c1] += val;
+            Changes[r1][c2+1] -= val;
+            Changes[r2+1][c1] -= val;
+            Changes[r2+1][c2+1] += val;
+        }
+        for (int c =1; c<n; c++){
+            Changes[0][c] += Changes[0][c-1];
+        }
+        for (int r=1; r<m; r++){
+            for (int c =1; c < n; c++){
+                Changes[r][c] += Changes[r][c-1];
+            }
+            for (int c=0; c<n; c++){
+                Changes[r][c] += Changes[r-1][c];
+            }
+        }
+        for (int r=0; r<m; r++){
+            for (int c=0;c<n; c++){
+                mat[r][c] += Changes[r][c];
+            }
+        }
+        return mat;
+    }
+};
