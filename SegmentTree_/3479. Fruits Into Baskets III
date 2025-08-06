@@ -1,0 +1,64 @@
+---------------------Brute Force Approach------------------------------------
+TIME COMP-----> O(N^2);
+SPACE COMP----> O(1);
+
+class Solution {
+public:
+    int numOfUnplacedFruits(vector<int>& fruits, vector<int>& baskets) {
+        int PlacedFruitTypes = 0, n = fruits.size();
+        vector<pair<int,int>>BasketsWithIdx;
+        for (int i=0; i<n; i++) BasketsWithIdx.push({baskets[i],i});
+        sort(BasketsWithIdx.begin(),BasketsWithIdx.end());
+        unordered_map<int,int>Used;
+        for (int i=0; i<n; i++){
+            
+        }
+        return n - PlacedFruitTypes;
+    }
+};
+
+
+---------------------------Optimal Approach---------------------------------
+TIME COMP----> O(N*LOG(N));
+SPACE COMP---> O(4*N);
+
+class Solution {
+public:
+    void Build(int i, int l, int r,vector<int>&baskets,vector<int>&SegmentTree){
+        if (l == r){
+            SegmentTree[i] = baskets[l];
+            return;
+        }
+        int mid = (l + r)/2;
+        Build(2*i+1,l,mid,baskets,SegmentTree);
+        Build(2*i+2,mid+1,r,baskets,SegmentTree);
+        SegmentTree[i] = max(SegmentTree[2*i+1],SegmentTree[2*i+2]);
+    }
+    bool QuerySegmentTree(int i, int l, int r,int &fruit,vector<int>&SegmentTree){
+        if (SegmentTree[i] < fruit) return false;
+        if (l == r){
+            SegmentTree[i] = -1;
+            return true;
+        }
+        int mid = (l+r)/2;
+        bool place = false;
+        if (SegmentTree[2*i+1] >= fruit){
+            place = QuerySegmentTree(2*i+1,l,mid,fruit,SegmentTree);
+        }else{
+            place = QuerySegmentTree(2*i+2,mid+1,r,fruit,SegmentTree);
+        }
+        SegmentTree[i] = max(SegmentTree[2*i+1],SegmentTree[2*i+2]);
+        return place;
+    }
+    int numOfUnplacedFruits(vector<int>& fruits, vector<int>& baskets) {
+        int n = fruits.size();
+        vector<int>SegmentTree(4*n,-1);
+        int i = 0,l = 0, r = n-1;
+        Build(i,l,r,baskets,SegmentTree);
+        int Unplaced = 0;
+        for (int &fruit : fruits){
+            if (!QuerySegmentTree(0,0,n-1,fruit,SegmentTree)) Unplaced++;
+        }
+        return Unplaced;
+    }
+};
