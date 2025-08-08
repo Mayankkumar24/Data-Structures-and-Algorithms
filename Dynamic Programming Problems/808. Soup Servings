@@ -1,0 +1,51 @@
+----------------------BRUTE FORCE APPROACH------------------------
+TIME COMP----> O(4^N);
+SPACE COMP---> O(N) A.SPACE;
+
+class Solution {
+public:
+    vector<pair<int,int>>options = {{100,0},{75,25},{50,50},{25,75}};
+    double FindProbablity(double a, double b){
+        if ((a <= 0) && (b <= 0)) return 0.5;
+        if (a <= 0) return 1.0;
+        if (b <= 0) return 0.0;
+        double Probablity = 0.0;
+        for (pair<int,int>&option : options){
+            Probablity += FindProbablity(a-option.first,b-option.second);
+        }
+        return Probablity * 0.25;
+    }
+    double soupServings(int n) {
+        double a = (double) n;
+        double b = (double) n;
+        return FindProbablity(a,b);
+    }
+};
+
+
+----------------------OPTIMAL APPROACH---------------------------
+TIME COMP------> O(N*N);
+SPACE COMP-----> O(N*N) + O(N) A.SPACE;
+
+class Solution {
+public:
+    vector<pair<int,int>>options = {{100,0},{75,25},{50,50},{25,75}};
+    double FindProbablity(double a, double b,vector<vector<double>>&Dp){
+        if ((a <= 0) && (b <= 0)) return 0.5;
+        if (a <= 0) return 1.0;
+        if (b <= 0) return 0.0;
+        if (Dp[a][b] != -1.0) return Dp[a][b];
+        double Probablity = 0.0;
+        for (pair<int,int>&option : options){
+            Probablity += FindProbablity(a-option.first,b-option.second,Dp);
+        }
+        return Dp[a][b] = Probablity * 0.25;
+    }
+    double soupServings(int n) {
+        double a = (double) n;
+        double b = (double) n;
+        if (n > 5000) return 1.0;
+        vector<vector<double>>Dp(n+1,vector<double>(n+1,-1.0));
+        return FindProbablity(a,b,Dp);
+    }
+};
