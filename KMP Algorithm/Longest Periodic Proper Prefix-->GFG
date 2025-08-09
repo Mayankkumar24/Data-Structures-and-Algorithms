@@ -1,0 +1,95 @@
+----------------------------BRUTE FORCE APPROACH----------------------
+TIME COMP-----> O(N^2);
+SPACE COMP----> O(N);
+
+class Solution {
+  public:
+    bool isPeriodicProperPrefix(string &p, string &s){
+        int n = s.size();
+        string curr = "";
+        while((int) curr.size() < n){
+            curr += p;
+        }
+        int m = curr.size();
+        int i = 0;
+        while(i<n && s[i] == curr[i]){
+            i++;
+        }
+        return i>=n;
+        
+    }
+    int getLongestPrefix(string &s) {
+        // code here
+        int n = s.size();
+        int length = -1;
+        string prefix = "";
+        for (int i=0; i<n-1; i++){
+            prefix += s[i];
+            if ((i+1 >=n/2) && isPeriodicProperPrefix(prefix,s)){
+                int m = prefix.length();
+                length = max(length,m);
+            }
+        }
+        return length;
+    }
+};
+
+
+-------------------------OPTIMAL APPROACH-------------------------------
+TIME COMP-----> O(N);
+SPACE COMP----> O(N);
+
+class Solution {
+  public:
+    int getLongestPrefix(string &s) {
+        // code here
+        int n = s.size();
+        if (n <= 1) return -1;
+        
+        vector<int>lps(n,0);
+        for (int i=1; i<n; i++){
+            int len = lps[i-1];
+            while(len > 0 && s[i] != s[len]){
+                len = lps[len-1];
+            }
+            if (s[i] == s[len]) len++;
+            lps[i] = len;
+        }
+        int l = lps[n-1];
+        if (l == 0) return -1;
+        
+        while(l > 0 && lps[l-1] > 0){
+            l = lps[l-1];
+        }
+        return n-l;
+    }
+};
+
+
+-----------------------------MOST OPTIMAL APPROACH---------------------------------
+TIME COMP-----> O(N);
+SPACE COMP----> O(1);
+
+class Solution {
+  public:
+    int getLongestPrefix(string &s) {
+        // code here
+        int n = s.size();
+        int len = n-1;
+        
+        while(len){
+            int sptr = len;
+            int i =0;
+            while(sptr < n){
+                if (s[sptr] == s[i]){
+                    i++; sptr++;
+                }else break;
+            }
+            if (sptr == n){
+                return len;
+            }
+            len--;
+        }
+        return -1;
+    }
+};
