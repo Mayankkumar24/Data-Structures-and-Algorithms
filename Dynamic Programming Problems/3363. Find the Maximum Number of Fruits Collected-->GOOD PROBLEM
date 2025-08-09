@@ -1,0 +1,84 @@
+----------------------BRUTE FORCE APPROACH---------------------------
+TIME COMP----> O(3^N);
+SPACE COMP---> O(N) A.SPACE;
+
+class Solution {
+public:
+    int n;
+    int Child1Moves(vector<vector<int>>& fruits){
+        int Count = 0;
+        for (int i=0; i<n; i++){
+            Count += fruits[i][i];
+        }
+        return Count;
+    }
+    int Child2Moves(int i, int j,vector<vector<int>>& fruits){
+        if (i>=n || j<0 || j>=n) return 0;
+        if (i == j || i>j) return 0;
+        int op1 = Child2Moves(i+1,j-1,fruits);
+        int op2 = Child2Moves(i+1,j,fruits);
+        int op3 = Child2Moves(i+1,j+1,fruits);
+        return fruits[i][j] + max({op1,op2,op3});
+
+    }
+    int Child3Moves(int i, int j,vector<vector<int>>& fruits){
+        if (i>=n || i<0 || j>=n) return 0;
+        if (i == j || i<j) return 0;
+        int op1 = Child3Moves(i-1,j+1,fruits);
+        int op2 = Child3Moves(i,j+1,fruits);
+        int op3 = Child3Moves(i+1,j+1,fruits);
+        return fruits[i][j] + max({op1,op2,op3});
+
+    }
+    int maxCollectedFruits(vector<vector<int>>& fruits) {
+        n = fruits.size();
+        int Child1 = Child1Moves(fruits);
+        int Child2 = Child2Moves(0,n-1,fruits);
+        int Child3 = Child3Moves(n-1,0,fruits);
+        return Child1 + Child2 + Child3;
+    }
+};
+
+---------------------OPTIMAL APPRAOCH----------------------
+TIME COMP-----> O(N*N);
+SPACE COMP----> O(N*N) + O(N) A.SPACE;
+
+class Solution {
+public:
+    int n;
+    int Child1Moves(vector<vector<int>>& fruits){
+        int Count = 0;
+        for (int i=0; i<n; i++){
+            Count += fruits[i][i];
+        }
+        return Count;
+    }
+    int Child2Moves(int i, int j,vector<vector<int>>& fruits,vector<vector<int>>&Dp){
+        if (i>=n || j<0 || j>=n) return 0;
+        if (i == j || i>j) return 0;
+        if (Dp[i][j] != -1) return Dp[i][j];
+        int op1 = Child2Moves(i+1,j-1,fruits,Dp);
+        int op2 = Child2Moves(i+1,j,fruits,Dp);
+        int op3 = Child2Moves(i+1,j+1,fruits,Dp);
+        return Dp[i][j]  = fruits[i][j] + max({op1,op2,op3});
+
+    }
+    int Child3Moves(int i, int j,vector<vector<int>>& fruits,vector<vector<int>>&Dp){
+        if (i>=n || i<0 || j>=n) return 0;
+        if (i == j || i<j) return 0;
+        if (Dp[i][j] != -1) return Dp[i][j];
+        int op1 = Child3Moves(i-1,j+1,fruits,Dp);
+        int op2 = Child3Moves(i,j+1,fruits,Dp);
+        int op3 = Child3Moves(i+1,j+1,fruits,Dp);
+        return Dp[i][j] = fruits[i][j] + max({op1,op2,op3});
+
+    }
+    int maxCollectedFruits(vector<vector<int>>& fruits) {
+        n = fruits.size();
+        vector<vector<int>>Dp(n+1,vector<int>(n+1,-1));
+        int Child1 = Child1Moves(fruits);
+        int Child2 = Child2Moves(0,n-1,fruits,Dp);
+        int Child3 = Child3Moves(n-1,0,fruits,Dp);
+        return Child1 + Child2 + Child3;
+    }
+};
