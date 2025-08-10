@@ -21,3 +21,26 @@ class Solution {
         return ans;
     }
 };
+
+----------------------APPROACH 02------------------------------
+
+class Solution {
+  public:
+    int countPS(string &s) {
+        // code here
+        int count = 0;
+        int n = s.size();
+        
+        for (int center = 0; center < n; center++){
+            int l = center, r = center +1;
+            while(l>=0 && r<n && s[l] == s[r]){
+                count++; l--; r++;
+            }
+            l = center -1; r = center + 1;
+            while(l>=0 && r<n && s[l] == s[r]){
+                count++; l--; r++;
+            }
+        }
+        return count;
+    }
+};
