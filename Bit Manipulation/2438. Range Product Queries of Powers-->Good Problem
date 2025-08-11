@@ -1,0 +1,68 @@
+-------------------------APPROACH 1-------------------------
+TIME COMP-----> O(M * (LENGHT OF POWERS ARRAY));
+SPACE COMP----> O(1);
+
+class Solution {
+public:
+    int FindProduct(int i, int j,vector<int>&Powers){
+        int mod = 1e9 + 7;
+        long long Product = 1;
+        for (int left=i; left <= j; left++){
+            Product *= (long long) Powers[left];
+            Product %= mod;
+        }
+        return Product;
+    }
+    vector<int> productQueries(int n, vector<vector<int>>& queries) {
+        int m = queries.size();
+        vector<int>Answer(m,0);
+        vector<int>Powers;
+        for (int i=0; i<32; i++){
+            if ((n) & (1 << i)){
+                Powers.push_back((1 << i));
+            }
+        }
+        for (int i=0; i<m; i++){
+            int left = queries[i][0];
+            int right = queries[i][1];
+            int CurrProduct = FindProduct(left,right,Powers);
+            Answer[i] = CurrProduct;
+        }
+        return Answer;
+    }
+};
+
+
+------------------------APPROCH 2------------------------------
+TIME COMP------> O(M);
+SPACE COMP-----> O(LGNGTH * LENGTH);
+
+class Solution {
+public:
+    vector<int> productQueries(int n, vector<vector<int>>& queries) {
+        int m = queries.size();
+        vector<int>Answer(m,0);
+        vector<int>Powers;
+        for (int i=0; i<32; i++){
+            if ((n) & (1 << i)){
+                Powers.push_back((1 << i));
+            }
+        }
+        int length = Powers.size();
+        int mod = 1e9 + 7;
+        vector<vector<long long>>ProductTable(length,vector<long long>(length,0));
+        for (int row=0; row < length; row++){
+            ProductTable[row][row] = Powers[row];
+            for (int col=row+1; col < length; col++){
+                ProductTable[row][col] = (long long) (ProductTable[row][col-1] *
+                Powers[col]) % mod;
+            }
+        }
+        for (int i=0; i<m; i++){
+            int left = queries[i][0];
+            int right = queries[i][1];
+            Answer[i] = ProductTable[left][right];
+        }
+        return Answer;
+    }
+};
