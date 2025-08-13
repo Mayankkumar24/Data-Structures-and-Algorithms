@@ -1,0 +1,44 @@
+---------------------BRUTE FORCE APPROACH------------------------
+TTIME COMP-------> O(2^sqrt(n));
+space comp-------> o(sqrt(n));
+
+class Solution {
+public:
+    const int mod = 1e9 + 7;
+    int Solve(int n, int sum, int &x, int num){
+        if (n == sum) return 1;
+        int temp = pow(num,x);
+        if (sum + temp > n) return 0;
+        int take = Solve(n,sum+temp,x,num+1);
+        int notTake = Solve(n,sum,x,num+1);
+        return (take + notTake)%mod;
+    }
+    int numberOfWays(int n, int x) {
+        return Solve(n,0,x,1);
+    }
+};
+
+
+--------------------------OPTIMAL APPROACH----------------------------------
+TIME COMP--------> O(N*N);
+SPACE COMP-------> O(N*N) + O(N) A.SPACE
+
+class Solution {
+public:
+    const int mod = 1e9 + 7;
+    int Solve(int n, int sum, int &x, int num,vector<vector<int>>&Dp){
+        if (n == sum) return 1;
+        int temp = pow(num,x);
+        if (sum + temp > n) return 0;
+        if (Dp[num][sum] != -1) return Dp[num][sum]%mod;
+        int take = Solve(n,sum+temp,x,num+1,Dp);
+        int notTake = Solve(n,sum,x,num+1,Dp);
+        return Dp[num][sum] = (take + notTake)%mod;
+    }
+    int numberOfWays(int n, int x) {
+        if (n == 1) return 1;
+        if (x > n) return 0;
+        vector<vector<int>>Dp(n+1,vector<int>(n+1,-1));
+        return Solve(n,0,x,1,Dp);
+    }
+};
