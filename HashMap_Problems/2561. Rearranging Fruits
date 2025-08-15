@@ -1,0 +1,31 @@
+class Solution {
+public:
+    typedef long long ll;
+    long long minCost(vector<int>& basket1, vector<int>& basket2) {
+        unordered_map<int,int>mp;
+        int minEle = INT_MAX;
+        for (int &x : basket1) {
+            mp[x]++;
+            minEle = min(minEle,x);
+        }
+        for (int &x : basket2){
+            mp[x]--;
+            minEle = min(minEle,x);
+        }
+        vector<int>Nums;
+        for (auto &x : mp){
+            int cost = x.first;
+            int count = x.second;
+            if (count == 0) continue;
+            if (count % 2 == 1) return -1;
+            for (int c =1; c<= abs(count)/2; c++) Nums.push_back(cost);
+        }
+        sort(Nums.begin(),Nums.end());
+        ll ans = 0;
+
+        for (int i=0; i<Nums.size()/2; i++){
+            ans += min(Nums[i],2*minEle);
+        }
+        return ans;
+    }
+};
