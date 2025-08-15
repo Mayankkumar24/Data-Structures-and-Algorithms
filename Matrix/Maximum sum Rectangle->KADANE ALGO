@@ -1,0 +1,30 @@
+TIME COMP----> O(N*N * M);
+SPACE COMP---> O(1);
+
+class Solution {
+  public:
+    int maxRectSum(vector<vector<int>> &mat) {
+        // code here
+        int n = mat.size();
+        int m = mat[0].size();
+        
+        int MaxSum = INT_MIN;
+        
+        for (int top=0; top<n; top++){
+            vector<int>ColSum(m,0);
+            for (int bottom = top; bottom<n; bottom++){
+                for (int col=0; col<m; col++){
+                    ColSum[col] += mat[bottom][col];
+                }
+                int currSum = 0;
+                for (int col=0; col<m; col++){
+                    currSum += ColSum[col];
+                    MaxSum = max(MaxSum,currSum);
+                    if (currSum < 0) currSum = 0;
+                }
+            }
+            
+        }
+        return MaxSum;
+    }
+};
