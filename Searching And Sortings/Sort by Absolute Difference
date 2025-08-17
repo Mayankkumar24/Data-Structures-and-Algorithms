@@ -1,0 +1,83 @@
+----------------------APPROACH 01----------------------------
+TIME COMP----> O(N*LOG(N));
+SPACE COMP---> O(2*N + N);
+
+class Solution {
+  public:
+    static bool comp(pair<int,int>&a,pair<int,int>&b){
+        if (a.first == b.first){
+            return a.second < b.second;
+        }else{
+            return a.first < b.first;
+        }
+    }
+    void rearrange(vector<int> &arr, int x) {
+        // code here
+        int n = arr.size();
+        vector<pair<int,int>>Nums;
+        
+        for (int i=0; i<n; i++){
+            int AbsDiff = abs(arr[i] - x);
+            Nums.push_back({AbsDiff,i});
+        }
+        sort(Nums.begin(),Nums.end(),comp);
+        vector<int>ans(n,0);
+        for (int i=0; i<n; i++){
+            ans[i] = arr[Nums[i].second];
+        }
+        for (int i=0; i<n; i++) arr[i] = ans[i];
+    }
+};
+
+
+----------------------------------APPROACH 02-------------------------------
+TIME COMP-----> O(N*LGO(N));
+SPACE COMP----> O(1);
+
+class Solution {
+  public:
+    void merge(int low, int mid, int high, std::vector<int> &nums,int &x)
+    {
+        std::vector<int> temp(high-low+1,0);
+        int left = low;
+        int right = mid+1;
+        int idx = 0;
+        while(left <= mid && right <= high)
+        {
+            if(abs(x - nums[left]) <= abs(x - nums[right])) //Check the absolute difference
+            {
+                temp[idx++] = nums[left++];
+            }
+            else
+            {
+                temp[idx++] = nums[right++];
+            }
+        }
+        while(left <= mid)
+        {
+            temp[idx++] = nums[left++];
+        }
+        while(right <= high)
+        {
+            temp[idx++] = nums[right++];
+        }
+        for(int i = low; i <= high; i++)
+        {
+            nums[i] = temp[i-low];
+        }
+    }
+    void mergeSort(int low, int high, std::vector<int> &arr, int &x)
+    {
+        if(low >= high) return;
+        int mid = low + ((high-low)>>1);
+        mergeSort(low,mid,arr,x);
+        mergeSort(mid+1,high,arr,x);
+        merge(low,mid,high,arr,x);
+        return;
+    }
+    void rearrange(vector<int> &arr, int x) {
+        // code here
+        mergeSort(0,arr.size()-1,arr,x);
+        
+    }
+};
