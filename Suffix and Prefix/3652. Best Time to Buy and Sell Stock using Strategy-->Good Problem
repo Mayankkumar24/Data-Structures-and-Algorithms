@@ -1,0 +1,123 @@
+--------------------------BRUTE FORCE APPROACH-------------------------
+TIME COMP----> O(N*K);
+SPACE COMP---> O(1);
+
+class Solution {
+public:
+    typedef long long ll;
+    long long maxProfit(vector<int>& prices, vector<int>& strategy, int k) {
+
+        int n = prices.size();
+        ll Original = 0;
+        for (int i=0; i<n; i++){
+            Original += (ll) (prices[i] * strategy[i]);
+        }
+        //ll MaxProfit = 0;
+
+        for (int i=0; i<=n-k; i++){
+            int j = i;
+            int l;
+            ll currProfit = 0;
+            while((j<n) && (j-i+1 <= k)) {
+                currProfit += (ll) (prices[j]);
+                j++;
+                l = j;
+            }
+            j = i;
+            while((j<n) && (j-i+1 <= k/2)){
+                currProfit -= (ll) (prices[j]);
+                j++;
+            }
+            j = 0;
+            while(j<i){
+                currProfit += (ll) (prices[j] * strategy[j]);
+                j++;
+            }
+            while(l<n){
+                currProfit += (ll) (prices[l] * strategy[l]);
+                l++;
+            }
+            Original = max(Original,currProfit);
+
+        }
+        return Original;
+    }
+};
+
+
+---------------------------OPTIMAL APPROACH----------------------------------
+TIME COMP--------> O(N);
+SPACE COMP-------> O(N);
+
+class Solution {
+public:
+    typedef long long ll;
+    long long maxProfit(vector<int>& prices, vector<int>& strategy, int k) {
+        int n = prices.size();
+        vector<ll>Original(n,0);
+        vector<ll>PreSum(n,0);
+        ll sum = 0, osum = 0;
+
+        for (int i=0; i<n; i++){
+            sum += prices[i];
+            PreSum[i] = sum;
+            osum += (ll) prices[i] * strategy[i];
+            Original[i] = osum;
+        }
+
+        ll ans = Original[n-1];
+
+        for (int i=k-1; i<n; i++){
+            ll Left_Sum_Without_Strategy = 0;
+            ll Right_Sum_Without_Strategy = 0;
+
+            ll Last_HalfSum_With_Strategy = PreSum[i] - PreSum[i-(k/2)];
+
+            if (i-k >= 0) Left_Sum_Without_Strategy = Original[i-k];
+            Right_Sum_Without_Strategy = Original[n-1] - Original[i];
+
+            ans = max(ans,Left_Sum_Without_Strategy + Right_Sum_Without_Strategy + Last_HalfSum_With_Strategy);
+        }
+
+        return ans;
+    }
+};
+
+
+------------------------MOST OPTIMAL APPROACH-------------------------------
+TIME COMP-----> O(N);
+SPACE COMP----> O(1);
+
+class Solution {
+public:
+    typedef long long ll;
+    long long maxProfit(vector<int>& prices, vector<int>& strategy, int k) {
+        ll ans = 0;
+        int n = prices.size();
+
+        for (int i=0; i<n; i++){
+            ans += (ll) prices[i] * strategy[i];
+        }
+        ll currSum = 0;
+
+        for (int i=0; i<k; i++){
+            if (i >= k/2){
+                currSum += prices[i];
+            }
+        }
+        for (int i=k; i<n; i++){
+            currSum += (ll) prices[i] * strategy[i];
+        }
+        ans = max(ans,currSum);
+
+        for (int i=0; i<n-k; i++){
+            currSum +=  (ll) (prices[i] * strategy[i]);
+            currSum -= (ll) (prices[i+k] * strategy[i+k]);
+            currSum -= (ll) (prices[i+(k/2)]);
+            currSum += (ll) prices[i+k];
+            ans = max(ans,currSum);
+        }
+
+        return ans;
+    }
+};
