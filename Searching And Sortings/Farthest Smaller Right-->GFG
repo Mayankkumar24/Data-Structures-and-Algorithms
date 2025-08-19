@@ -1,0 +1,67 @@
+----------------------BRUTE FORCE APPROACH--------------------------
+TIME COMP------> O(N^2);
+SPACE COMP-----> O(1);
+
+class Solution {
+  public:
+    vector<int> farMin(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+        
+        vector<int>Answer(n,-1);
+        
+        for (int i=0; i<n; i++){
+            int idx = -1;
+            for (int j=i+1; j<n; j++){
+                if (arr[j] < arr[i]){
+                    idx = j;
+                }
+            }
+            Answer[i] = idx;
+        }
+        return Answer;
+    }
+};
+
+
+------------------------OPTIMAL APPROACH-----------------------------
+
+TIME COMP------> O(N*LOG(N));
+SPACE COMP-----> O(N);
+
+class Solution {
+  public:
+    void Find_Lowest_From_Right(vector<int>&arr,vector<int>&Nums){
+        int n = arr.size();
+        Nums[n-1] = arr[n-1];
+        
+        for (int i=n-2; i>=0; i--){
+            Nums[i] = min(arr[i],Nums[i+1]);
+        }
+    }
+    void Find_Next_Lowest_Num_Index(int l, int h,int &idx,int &ele,vector<int>&Nums){
+        while(l <= h){
+            int mid = (l + h)/2;
+            if (Nums[mid] < ele){
+                idx = mid;
+                l = mid+1;
+            }else{
+                h = mid-1;
+            }
+        }
+    }
+    vector<int> farMin(vector<int>& arr) {
+        // code here
+        int n = arr.size();
+        
+        vector<int>LowestFromRight(n,INT_MAX);
+        Find_Lowest_From_Right(arr,LowestFromRight);
+        
+        for (int i=0; i<n; i++){
+            int Next_Lowest_Index_ele = -1;
+            Find_Next_Lowest_Num_Index(i+1,n-1,Next_Lowest_Index_ele,arr[i],LowestFromRight);
+            LowestFromRight[i] = Next_Lowest_Index_ele;
+        }
+        return LowestFromRight;
+    }
+};
