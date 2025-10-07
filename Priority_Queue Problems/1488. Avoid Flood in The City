@@ -1,0 +1,37 @@
+TIME COMP-----> O(N*LOG(N));
+SPACE COMP----> O(N);
+
+class Solution {
+public:
+    vector<int> avoidFlood(vector<int>& rains) {
+
+        int n = rains.size();
+        unordered_set<int>Full;
+        unordered_map<int,queue<int>>Future;
+        priority_queue<pair<int,int>,vector<pair<int,int>>,greater<>>pq;
+        
+        vector<int>ans(n,1);
+
+        for (int i=0; i<n; i++) Future[rains[i]].push(i);
+
+        for (int i=0; i<n; i++){
+            if (rains[i] > 0){
+                int lake = rains[i];
+                Future[lake].pop(); ans[i] = -1;
+                if (Full.count(lake)) return {};
+                Full.insert(lake);
+                if (!Future[lake].empty()){
+                    pq.push({Future[lake].front(),lake});
+                }
+            }else{
+                if (!pq.empty()){
+                    auto [next_rain,lake] = pq.top(); pq.pop();
+                    ans[i] = lake;
+                    Full.erase(lake);
+                }
+            }
+        }
+
+        return ans;
+    }
+};
