@@ -1,0 +1,27 @@
+class Solution {
+public:
+    typedef long long ll;
+    bool isPossible(ll t, ll d1, ll d2, ll r1, ll r2){
+        ll lcm = ((r1*r2)/(__gcd(r1,r2)));
+        ll s1 = t - (t/r1);
+        ll s2 = t - (t/r2);
+        ll total_slots = t - (t/lcm);
+        return ((s1 >= d1) && (s2 >= d2) && (total_slots >= d1 + d2));
+    }
+    long long minimumTime(vector<int>& d, vector<int>& r) {
+        ll d1 = d[0], d2 = d[1], r1 = r[0], r2 = r[1];
+        ll low = d1 + d2;
+        ll high = 2 * (low) * 2;
+        ll ans = high;
+        while(low <= high){
+            ll mid = (low + high)/2;
+            if (isPossible(mid,d1,d2,r1,r2)){
+                ans = min(ans,mid);
+                high = mid-1;
+            }else{
+                low = mid+1;
+            }
+        }
+        return ans;
+    }
+};
