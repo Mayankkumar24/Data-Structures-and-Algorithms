@@ -1,0 +1,11 @@
+
+----------COUNT NUMBER OF BITS IN ANY GIVEN MASK-------------------
+
+int popcount(int x) {
+    int count = 0;
+    while (x) {
+        x &= (x - 1);  // removes the lowest set bit
+        count++;
+    }
+    return count;
+}
